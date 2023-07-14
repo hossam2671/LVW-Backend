@@ -17,8 +17,13 @@ const adminSchema = mongoose.Schema({
     img: {
         type: String,
         // default:
-    }
+    },
+    
 
+},
+{
+    versionKey:false,
+     strict:false,
 })
 
 const Admin = mongoose.model("admin", adminSchema);

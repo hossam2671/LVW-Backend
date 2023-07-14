@@ -37,7 +37,10 @@ const userSchema = mongoose.Schema({
             ref:"tours"}
     ]
 
-})
+},{
+    versionKey:false,
+     strict:false,
+  })
 
 const user = mongoose.model("user", userSchema);
 module.exports = user;

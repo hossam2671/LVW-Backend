@@ -88,6 +88,9 @@ const toursSchema = mongoose.Schema({
         enum: ['public', 'VIP'],
         default:'public'
     }
-})
+},{
+    versionKey:false,
+     strict:false,
+  })
 const tours = mongoose.model("tours", toursSchema);
 module.exports = tours;

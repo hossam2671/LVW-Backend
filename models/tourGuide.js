@@ -69,9 +69,17 @@ const tourGuideSchema = mongoose.Schema({
         type: String,
         enum: ['tourGuide', 'headTourGuide'],
         default:'tourGuide'
+    },
+    status:{
+        type:String,
+        enum: ['pending', 'accepted'],
+        default: 'pending'
     }
 
-})
+},{
+    versionKey:false,
+     strict:false,
+  })
 
 const tourGuide = mongoose.model("tourGuide", tourGuideSchema);
 module.exports = tourGuide;

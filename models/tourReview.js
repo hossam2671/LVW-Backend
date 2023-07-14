@@ -36,7 +36,10 @@ const tourReviewSchema = mongoose.Schema({
         type: String,
         enum: ['Italian', 'English', 'Arabic'],
     }
-})
+},{
+    versionKey:false,
+     strict:false,
+  })
 
 const tourReview = mongoose.model("tourReview", tourReviewSchema);
 module.exports = tourReview;

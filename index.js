@@ -22,6 +22,14 @@ app.get('/',function(req,res)
 // Call Routes : 
 const ObjectId = require("mongodb").ObjectId;
 
+const technicalRoute = require("./routers/technicalRoute")
+const adminRoute = require("./routers/adminRoute")
+const userRoute = require('./routers/userRoute')
+
+app.use('/technical', technicalRoute)
+app.use('/admin', adminRoute)
+app.use('/user', userRoute)
+
 
 // port listening
 

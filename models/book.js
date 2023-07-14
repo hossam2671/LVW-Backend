@@ -38,6 +38,9 @@ const bookSchema = mongoose.Schema({
         // require: true,
     }
 
-})
+},{
+    versionKey:false,
+     strict:false,
+  })
 const book = mongoose.model("book", bookSchema);
 module.exports = book;

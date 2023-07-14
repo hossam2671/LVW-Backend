@@ -69,9 +69,18 @@ const directorSchema = mongoose.Schema({
     //     type: String,
     //     enum: ['director', 'headDirector'],
     //     default:'director'
-    // }
+    // },
 
-})
+    status:{
+        type:String,
+        enum: ['pending', 'accepted'],
+        default: 'pending'
+    }
+
+},{
+    versionKey:false,
+     strict:false,
+  })
 
 const director = mongoose.model("director", directorSchema);
 module.exports = director;

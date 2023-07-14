@@ -69,9 +69,18 @@ const cameraOperatorSchema = mongoose.Schema({
     //     type: String,
     //     enum: ['cameraOperator', 'headCameraOperator'],
     //     default:'cameraOperator'
-    // }
+    // },
 
-})
+    status:{
+        type:String,
+        enum: ['pending', 'accepted'],
+        default: 'pending'
+    }
+
+},{
+    versionKey:false,
+     strict:false,
+  })
 
 const cameraOperator = mongoose.model("cameraOperator", cameraOperatorSchema);
 module.exports = cameraOperator;
