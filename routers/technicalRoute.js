@@ -163,6 +163,115 @@ route.post("/login", async (req, res) => {
     }
 });
 
+ //add language
+ route.put("/addLang", async (req, res) => {
+    const tourGuideData = await tourGuide.findById(req.body.id);
+    const cameraOperatorData = await cameraOperator.findById(req.body.id);
+    const directorData = await director.findById(req.body.id);
+
+    if (tourGuideData) {
+        if (tourGuideData.languages.includes(req.body.lang)) {
+            res.json({
+                status: 200,
+                data: tourGuideData,
+                success: false,
+                message: "This language already exists."
+            });
+        } else {
+            const tourGuideUpdated = await tourGuide.findByIdAndUpdate(
+                req.body.id,
+                { $push: { languages: req.body.lang } },
+                { new: true }
+            );
+            res.json({
+                status: 400,
+                message: `${req.body.lang} added successfully.`,
+                success: true,
+                data: tourGuideUpdated
+            });
+        }
+    } else if (cameraOperatorData) {
+        if (cameraOperatorData.languages.includes(req.body.lang)) {
+            res.json({
+                status: 200,
+                data: cameraOperatorData,
+                success: false,
+                message: "This language already exists."
+            });
+        } else {
+            const cameraOperatorUpdated = await cameraOperator.findByIdAndUpdate(
+                req.body.id,
+                { $push: { languages: req.body.lang } },
+                { new: true }
+            );
+            res.json({
+                status: 400,
+                message: `${req.body.lang} added successfully.`,
+                success: true,
+                data: cameraOperatorUpdated
+            });
+        }
+    } else if (directorData) {
+        if (directorData.languages.includes(req.body.lang)) {
+            res.json({
+                status: 200,
+                data: directorData,
+                success: false,
+                message: "This language already exists."
+            });
+        } else {
+            const directorUpdated = await director.findByIdAndUpdate(
+                req.body.id,
+                { $push: { languages: req.body.lang } },
+                { new: true }
+            );
+            res.json({
+                status: 400,
+                message: `${req.body.lang} added successfully.`,
+                success: true,
+                data: directorUpdated
+            });
+        }
+    }
+});
+
+
+//get one tour guide by id
+route.get("getOneTourGuide",async function(req,res){
+    const tourGuideData = await tourGuide.findById(req.body.id)
+    res.json({
+        data:tourGuideData,
+        success:true,
+        message:"done",
+        status:400
+    })    
+})
+
+//get one camera operator by id
+route.get("getOneCameraOperator",async function(req,res){
+    const cameraOperatorData = await cameraOperator.findById(req.body.id)
+    res.json({
+        data:cameraOperatorData,
+        success:true,
+        message:"done",
+        status:400
+    })    
+})
+
+//get one director by id
+route.get("getOneCameraOperator",async function(req,res){
+    const cameraOperatorData = await cameraOperator.findById(req.body.id)
+    res.json({
+        data:cameraOperatorData,
+        success:true,
+        message:"done",
+        status:400
+    })    
+})
+
+
+  
+
 
 
 module.exports = route;

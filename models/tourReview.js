@@ -4,9 +4,9 @@ const tourReviewSchema = mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"user"
     },
-    tour:{
+    book:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"tours"
+        ref:"book"
     },
     rate:{
         type: Number,
@@ -32,10 +32,6 @@ const tourReviewSchema = mongoose.Schema({
     directorComment:{
         type:String,
     },
-    language:{
-        type: String,
-        enum: ['Italian', 'English', 'Arabic'],
-    }
 },{
     versionKey:false,
      strict:false,

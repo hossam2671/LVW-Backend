@@ -50,12 +50,17 @@ const cameraOperatorSchema = mongoose.Schema({
         {type:mongoose.Schema.Types.ObjectId,
             ref:"tours"}
     ],
+    reviews:[
+        {type:mongoose.Schema.Types.ObjectId,
+        ref:"tourReview"}
+    ],
     experience:{
         type: String,
     },
     avgRate:{
         type: Number,
     },
+    allRate:Number,
     license:{
         type: String,
         // require: true,

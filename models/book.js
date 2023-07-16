@@ -8,18 +8,6 @@ const bookSchema = mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"tours"
     },
-    tourGuide:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"tourGuide"
-    },
-    cameraOperator:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"cameraOperator"
-    },
-    director:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"director"
-    },
     price:{
         type: Number,
         

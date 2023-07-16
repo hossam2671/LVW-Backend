@@ -38,6 +38,13 @@ const toursSchema = mongoose.Schema({
     avgRate:{
         type: Number,
     },
+    allRate:{
+        type:Number
+    },
+    reviews:[
+        {type:mongoose.Schema.Types.ObjectId,
+        ref:"tourReview"}
+    ],
     img:[
         {type:String}
     ],
@@ -87,6 +94,11 @@ const toursSchema = mongoose.Schema({
         type: String,
         enum: ['public', 'VIP'],
         default:'public'
+    },
+    status:{
+        type:String,
+        enum: ['pending',"live",'finished'],
+        default:'pending'
     }
 },{
     versionKey:false,
