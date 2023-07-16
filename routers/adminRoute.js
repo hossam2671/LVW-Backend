@@ -8,6 +8,7 @@ const tourGuide = require("../models/tourGuide")
 const cameraOperator = require("../models/cameraOperator")
 const director = require("../models/director")
 const tour = require("../models/tours")
+const user = require('../models/user')
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const path = require("path");
@@ -135,6 +136,45 @@ route.put('/accept', async function(req, res) {
     }
 });
 
+// get all tours
+route.get("/allTours", async function(req,res){
+    const toursData = await tour.find({})
+    if(toursData.length>0){
+        res.json({
+            status:400,
+            message:"done",
+            success:true,
+            data:toursData
+        })
+    }
+    else{
+        res.json({
+            status:200,
+            success:false,
+            message:"there is no tours"
+        })
+    }
+})
+
+//get all users
+route.get("/allUsers",async function(req,res){
+    const userData = await user.find({})
+    if(userData.length>0){
+        res.json({
+            status:400,
+            message:"done",
+            success:true,
+            data:userData
+        })
+    }
+    else{
+        res.json({
+            status:200,
+            success:false,
+            message:"there is no users"
+        })
+    }
+})
 
 // get all TourGuides
 route.get("/allTourGuides", async function(req,res){
@@ -473,16 +513,6 @@ route.post('/addTour',upload.array("img", 9), async function (req,res){
     res.send(tourData)
 })
 
-//get all users
-route.get("/getAllUsers", async function(req,res){
-    const userData = await user.find({})
-    res.json({
-        data:userData,
-        success:true,
-        message:"done",
-        status:400
-    })    
-})
 
 // get all admins
 route.get("getAllAdmins", async function(req,res){
