@@ -237,7 +237,7 @@ else{
 }
 })
 
-// get all arabic tour guides
+// get all arabic tour guides , camera operators , directors
 route.get("/arabicTourGuides", async function(req,res){
     const tourGuideData = await tourGuide.find({languages:{$in:["arabic"]}})
     if (tourGuideData.length>0){
@@ -257,7 +257,6 @@ route.get("/arabicTourGuides", async function(req,res){
     }   
 })
 
-// get all arabic camera opertors
 route.get("/arabicCameraOperators", async function(req,res){
     const cameraOperatorData = await cameraOperator.find({languages:{$in:["arabic"]}})
     if (cameraOperatorData.length>0){
@@ -296,7 +295,7 @@ route.get("/arabicDierctors", async function(req,res){
 })
 
 
-// get all arabic tour guides
+// get all English tour guides , camera operators , directors
 route.get("/englishTourGuides", async function(req,res){
     const tourGuideData = await tourGuide.find({languages:{$in:["english"]}})
     if (tourGuideData.length>0){
@@ -352,7 +351,7 @@ route.get("/englishDirectors", async function(req,res){
     }   
 })
 
-// get all arabic tour guides
+// get all Italy tour guides , camera operators , directors
 route.get("/italianoTourGuides", async function(req,res){
     const tourGuideData = await tourGuide.find({languages:{$in:["italiano"]}})
     if (tourGuideData.length>0){
