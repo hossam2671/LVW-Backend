@@ -138,7 +138,10 @@ route.put('/accept', async function(req, res) {
 
 // get all tours
 route.get("/allTours", async function(req,res){
-    const toursData = await tour.find({})
+    const toursData = await tour.find({}).populate("arabicTourGuide").populate("arabicCameraOperator")
+    .populate("arabicDirector").populate("englishTourGuide").populate("englishCameraOperator")
+    .populate("englishDirector").populate("italianTourGuide").populate("italianCameraOperator")
+    .populate("italianDirector")
     if(toursData.length>0){
         res.json({
             status:400,
@@ -541,6 +544,12 @@ route.get("/topFiveCameraOperators",async function(req,res){
 route.get("/topFiveDirectors",async function(req,res){
     const directorData = await director.find().sort({ avgRate: -1 }).limit(5)
     res.send(directorData)
+})
+
+// get top 5 tours
+route.get("/topFiveTours",async function(req,res){
+    const tourData = await tour.find().sort({ avgRate: -1 }).limit(6)
+    res.send(tourData)
 })
 
 // get all revenue
