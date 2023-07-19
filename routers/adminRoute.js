@@ -135,6 +135,100 @@ route.put('/accept', async function(req, res) {
         });
     }
 });
+//block technical
+route.put('/block', async function(req, res) {
+    const tourGuideData = await tourGuide.findById(req.body.id);
+    const cameraOperatorData = await cameraOperator.findById(req.body.id);
+    const directorData = await director.findById(req.body.id);
+    if (tourGuideData) {
+        const tourGuideupdated = await tourGuide.findByIdAndUpdate(req.body.id, {
+            status: "blocked"
+        });
+        const tourGuideDataupdated = await tourGuide.findById(req.body.id);
+        res.json({
+            status: 400,
+            success: true,
+            data: tourGuideDataupdated,
+            message: "Updated Successfully"
+        });
+    } else if (cameraOperatorData) {
+        const cameraOperatorUpdated = await cameraOperator.findByIdAndUpdate(req.body.id, {
+            status: "blocked"
+        });
+        const cameraOperatorDataUpdated = await cameraOperator.findById(req.body.id);
+        res.json({
+            status: 400,
+            success: true,
+            data: cameraOperatorDataUpdated,
+            message: "Updated Successfully"
+        });
+    } else if (directorData) {
+        const directorUpdated = await director.findByIdAndUpdate(req.body.id, {
+            status: "blocked"
+        });
+        const directorDataUpdated = await director.findById(req.body.id);
+        res.json({
+            status: 400,
+            success: true,
+            data: directorDataUpdated,
+            message: "Updated Successfully"
+        });
+    } else if(!cameraOperatorData  && !tourGuideData && !directorData) {
+        res.json({
+            status: 200,
+            success: false,
+            message: "No one with that info"
+        });
+        
+    }
+});
+//unblock technical
+route.put('/unblock', async function(req, res) {
+    const tourGuideData = await tourGuide.findById(req.body.id);
+    const cameraOperatorData = await cameraOperator.findById(req.body.id);
+    const directorData = await director.findById(req.body.id);
+    if (tourGuideData) {
+        const tourGuideupdated = await tourGuide.findByIdAndUpdate(req.body.id, {
+            status: "accepted"
+        });
+        const tourGuideDataupdated = await tourGuide.findById(req.body.id);
+        res.json({
+            status: 400,
+            success: true,
+            data: tourGuideDataupdated,
+            message: "Updated Successfully"
+        });
+    } else if (cameraOperatorData) {
+        const cameraOperatorUpdated = await cameraOperator.findByIdAndUpdate(req.body.id, {
+            status: "accepted"
+        });
+        const cameraOperatorDataUpdated = await cameraOperator.findById(req.body.id);
+        res.json({
+            status: 400,
+            success: true,
+            data: cameraOperatorDataUpdated,
+            message: "Updated Successfully"
+        });
+    } else if (directorData) {
+        const directorUpdated = await director.findByIdAndUpdate(req.body.id, {
+            status: "accepted"
+        });
+        const directorDataUpdated = await director.findById(req.body.id);
+        res.json({
+            status: 400,
+            success: true,
+            data: directorDataUpdated,
+            message: "Updated Successfully"
+        });
+    } else if(!cameraOperatorData  && !tourGuideData && !directorData) {
+        res.json({
+            status: 200,
+            success: false,
+            message: "No one with that info"
+        });
+        
+    }
+});
 
 // get all tours
 route.get("/allTours", async function(req,res){
