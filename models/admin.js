@@ -14,12 +14,25 @@ const adminSchema = mongoose.Schema({
         // min: 6
         // require: true,
     },
+    phone:{
+        type: String,
+    },
+    address:{
+        type: String,
+    },
     img: {
         type: String,
-        // default:
+        // default: ''
     },
-    
-
+    coverImg:{
+        type: String,
+        // default:''
+    },
+    role:{
+        type: String,
+        enum: ['admin', 'headAdmin'],
+        default:'admin'
+    }
 },
 {
     versionKey:false,
