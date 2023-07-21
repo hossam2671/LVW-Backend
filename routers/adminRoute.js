@@ -253,6 +253,26 @@ route.get("/allTours", async function(req,res){
     }
 })
 
+//get all admins
+route.get("/allAdmins",async function(req,res){
+    const adminsData = await admin.find({})
+    if(adminsData.length>0){
+        res.json({
+            status:400,
+            message:"done",
+            success:true,
+            data:adminsData
+        })
+    }
+    else{
+        res.json({
+            status:200,
+            success:false,
+            message:"there is no Admins"
+        })
+    }
+})
+
 //get all users
 route.get("/allUsers",async function(req,res){
     const userData = await user.find({})

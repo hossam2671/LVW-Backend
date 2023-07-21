@@ -32,7 +32,11 @@ const adminSchema = mongoose.Schema({
         type: String,
         enum: ['admin', 'headAdmin'],
         default:'admin'
-    }
+    },
+    joinedAt:{
+        type: Date,
+        default: Date.now,
+    },
 },
 {
     versionKey:false,
