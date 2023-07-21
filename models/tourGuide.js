@@ -14,6 +14,11 @@ const tourGuideSchema = mongoose.Schema({
         // min: 6
         // require: true,
     },
+    phone:{
+        type: String
+        // require: true,
+
+    },
     img:{
         type: String,
         // default:
