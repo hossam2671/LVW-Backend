@@ -660,6 +660,15 @@ route.get("/allRevenue" , async function(req,res){
       }
 })
 
-
+// vip tours
+route.get("/vip",async function(req,res){
+    const vipData = await tour.find({category:"vip"})
+    res.send(vipData)
+})
+// public tours
+route.get("/public",async function(req,res){
+    const publicData = await tour.find({category:"public"})
+    res.send(publicData)
+})
 
 module.exports = route;
