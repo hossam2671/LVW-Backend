@@ -691,4 +691,12 @@ route.get("/public",async function(req,res){
     res.send(publicData)
 })
 
+// get admin by id
+route.get("/oneAdmin/:id",async function(req,res){
+    console.log(req.params)
+    const adminData = await admin.findById(req.params.id)
+    console.log(adminData)
+    res.send(adminData)
+})
+
 module.exports = route;
