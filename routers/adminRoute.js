@@ -9,6 +9,7 @@ const cameraOperator = require("../models/cameraOperator")
 const director = require("../models/director")
 const tour = require("../models/tours")
 const user = require('../models/user')
+const review = require('../models/tourReview')
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const path = require("path");
@@ -697,6 +698,23 @@ route.get("/oneAdmin/:id",async function(req,res){
     const adminData = await admin.findById(req.params.id)
     console.log(adminData)
     res.send(adminData)
+}) 
+
+
+// get all reviws
+route.get("/allReviews", async function(req,res){
+    const reviewData = await review.find({}).populate({
+        path:"book",
+        populate: [
+        {
+          path: 'tour',
+          populate: {
+            path: 'arabicTourGuide arabicCameraOperator arabicDirector englishTourGuide englishCameraOperator englishDirector italianTourGuide italianCameraOperator italianDirector',
+          },
+        },
+      ],
+    })
+    res.send(reviewData)
 })
 
 module.exports = route;
