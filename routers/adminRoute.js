@@ -524,111 +524,191 @@ route.get("/italianoDirectors", async function(req,res){
 
 
 // add tour
-route.post('/addTour',upload.array("img", 9), async function (req,res){
-    const date = req.body.date;
-    let multiimages = req.files.map((file) => file.filename);
+route.post('/addTour', upload.array("images", 9), async function (req, res) {
+  try {
+    console.log(req.body);
 
-    // Check if tour guides are available
-    const tourGuides = [req.body.arabicTourGuide, req.body.englishTourGuide, req.body.italianTourGuide];
-    for (const tourGuideId of tourGuides) {
-        if (tourGuideId) {
-            
-            const tourGuidee = await tourGuide.findById(tourGuideId).populate("tours");
-            const tourDates = tourGuidee.tours.map(tour => new Date(tour.date));
-            console.log(tourDates)
-            const newDate = new Date(date)
-            console.log(newDate)
-            for(let i =0;i<tourDates.length;i++){
+    let arabicTourGuide, englishTourGuide, italianTourGuide;
+    let arabicCameraOperator, englishCameraOperator, italianCameraOperator;
+    let arabicDirector, englishDirector, italianDirector;
 
-                if (tourDates[i]==date) {
-                    console.log("hello")
-                    return res.status(400).send(`The selected tour guide is not available on ${date}.`);
-                }
-            }
-        }
+    for (const tourGuide of req.body.tourGuide) {
+      if (tourGuide.language === "Arabic") {
+        arabicTourGuide = tourGuide.guide;
+      } else if (tourGuide.language === "English") {
+        englishTourGuide = tourGuide.guide;
+      } else if (tourGuide.language === "Italiano") {
+        italianTourGuide = tourGuide.guide;
+      }
     }
 
-     // Check if camera operators are available
-     const cameraOperators = [req.body.arabicCameraOperator, req.body.englishCameraOperator, req.body.italianCameraOperator];
-     for (const cameraOperatorId of cameraOperators) {
-         if (cameraOperatorId) {
-             const cameraOperatorr = await cameraOperator.findById(cameraOperatorId);
-             const tourDates = cameraOperatorr.tours.map(tour => tour.date);
-             if (tourDates.includes(date)) {
-                 return res.status(400).send(`The selected camera operator is not available on ${date}.`);
-             }
-         }
-     }
+    for (const cameraOperator of req.body.cameraOperator) {
+      if (cameraOperator.language === "Arabic") {
+        arabicCameraOperator = cameraOperator.operator;
+      } else if (cameraOperator.language === "English") {
+        englishCameraOperator = cameraOperator.operator;
+      } else if (cameraOperator.language === "Italiano") {
+        italianCameraOperator = cameraOperator.operator;
+      }
+    }
 
+    for (const director of req.body.director) {
+      if (director.language === "Arabic") {
+        arabicDirector = director.director;
+      } else if (director.language === "English") {
+        englishDirector = director.director;
+      } else if (director.language === "Italiano") {
+        italianDirector = director.director;
+      }
+    }
+
+    // Check if a tour guide is assigned to multiple language roles
+    const allTourGuides = [arabicTourGuide, englishTourGuide, italianTourGuide];
+    if (allTourGuides.some((guide, index) => guide && allTourGuides.indexOf(guide) !== index)) {
+      return res.send(`One of the tour guides is assigned to multiple language roles.`);
+    }
+
+    // Check if a camera operator is assigned to multiple language roles
+    const allCameraOperators = [arabicCameraOperator, englishCameraOperator, italianCameraOperator];
+    if (allCameraOperators.some((operator, index) => operator && allCameraOperators.indexOf(operator) !== index)) {
+      return res.send(`One of the camera operators is assigned to multiple language roles.`);
+    }
+
+    // Check if a director is assigned to multiple language roles
+    const allDirectors = [arabicDirector, englishDirector, italianDirector];
+    if (allDirectors.some((director, index) => director && allDirectors.indexOf(director) !== index)) {
+      return res.send(`One of the directors is assigned to multiple language roles.`);
+    }
+
+    const date = req.body.date;
+    const newDate = new Date(date);
+
+    let isTourGuideAvailable = true;
+    const tourGuides = [arabicTourGuide, englishTourGuide, italianTourGuide];
+    for (const tourGuideId of tourGuides) {
+      if (tourGuideId) {
+        const tourGuidee = await tourGuide.findById(tourGuideId).populate("tours");
+        const tourDates = tourGuidee.tours.map(tour => new Date(tour.date));
+        console.log(tourDates);
+        console.log(newDate);
+        for (const tourDate of tourDates) {
+          if (tourDate.getTime() === newDate.getTime()) {
+            console.log("hello");
+            isTourGuideAvailable = false;
+            break;
+          }
+        }
+        if (!isTourGuideAvailable) {
+          break;
+        }
+      }
+    }
+
+    let isCameraOperatorAvailable = true;
+    const cameraOperators = [arabicCameraOperator, englishCameraOperator, italianCameraOperator];
+    for (const cameraOperatorId of cameraOperators) {
+      if (cameraOperatorId) {
+        const cameraOperatorr = await cameraOperator.findById(cameraOperatorId);
+        const tourDates = cameraOperatorr.tours.map(tour => new Date(tour.date));
+        if (tourDates.some(tourDate => tourDate.getTime() === newDate.getTime())) {
+          isCameraOperatorAvailable = false;
+          break;
+        }
+      }
+    }
+
+    let isDirectorAvailable = true;
+    const directors = [arabicDirector, englishDirector, italianDirector];
+    for (const directorId of directors) {
+      if (directorId) {
+        const directorr = await director.findById(directorId);
+        const tourDates = directorr.tours.map(tour => new Date(tour.date));
+        if (tourDates.some(tourDate => tourDate.getTime() === newDate.getTime())) {
+          isDirectorAvailable = false;
+          break;
+        }
+      }
+    }
+
+    if (!isTourGuideAvailable || !isCameraOperatorAvailable || !isDirectorAvailable) {
+      const localDate = new Date(date).toLocaleString();
+      return res.send(`One of the selected tour guides, camera operators, or directors is not available on ${localDate}.`);
+    }
 
     const tourData = await tour.create({
-        title:req.body.title,
-        description:req.body.description,
-        hours:req.body.hours,
-        address:req.body.address,
-        tags:req.body.tags,
-        date:req.body.date,
-        price:req.body.price,
-        img:multiimages,
-        instructions:req.body.instructions,
-        arabicTourGuide:req.body.arabicTourGuide,
-        englishTourGuide:req.body.englishTourGuide,
-        italianTourGuide:req.body.italianTourGuide,
-        arabicCameraOperator:req.body.arabicCameraOperator,
-        englishCameraOperator:req.body.englishCameraOperator,
-        italianCameraOperator:req.body.italianCameraOperator,
-        arabicDirector:req.body.arabicDirector,
-        englishDirector:req.body.englishDirector,
-        italianDirector:req.body.italianDirector,
-        category:req.body.category        
-    })
-    if(req.body.arabicTourGuide){
-        const tourGuideData = await tourGuide.findByIdAndUpdate(req.body.arabicTourGuide,{
-            $push :{tours:tourData._id}
-        })
+      title: req.body.title,
+      description: req.body.desc,
+      hours: req.body.hours,
+      address: req.body.address,
+      tags: req.body.tags,
+      date: req.body.date,
+      time: req.body.startTime,
+      price: req.body.price,
+      instructions: req.body.instructions,
+      arabicTourGuide: arabicTourGuide,
+      englishTourGuide: englishTourGuide,
+      italianTourGuide: italianTourGuide,
+      arabicCameraOperator: arabicCameraOperator,
+      englishCameraOperator: englishCameraOperator,
+      italianCameraOperator: italianCameraOperator,
+      arabicDirector: arabicDirector,
+      englishDirector: englishDirector,
+      italianDirector: italianDirector,
+    });
+
+    if (arabicTourGuide) {
+      const tourGuideData = await tourGuide.findByIdAndUpdate(arabicTourGuide, {
+        $push: { tours: tourData._id }
+      });
     }
-    if(req.body.englishTourGuide){
-        const tourGuideData = await tourGuide.findByIdAndUpdate(req.body.englishTourGuide,{
-            $push :{tours:tourData._id}
-        })
+    if (englishTourGuide) {
+      const tourGuideData = await tourGuide.findByIdAndUpdate(englishTourGuide, {
+        $push: { tours: tourData._id }
+      });
     }
-    if(req.body.italianTourGuide){
-        const tourGuideData = await tourGuide.findByIdAndUpdate(req.body.italianTourGuide,{
-            $push :{tours:tourData._id}
-        })
+    if (italianTourGuide) {
+      const tourGuideData = await tourGuide.findByIdAndUpdate(italianTourGuide, {
+        $push: { tours: tourData._id }
+      });
     }
-    if(req.body.arabicCameraOperator){
-        const tourGuideData = await cameraOperator.findByIdAndUpdate(req.body.arabicCameraOperator,{
-            $push :{tours:tourData._id}
-        })
+    if (arabicCameraOperator) {
+      const cameraOperatorData = await cameraOperator.findByIdAndUpdate(arabicCameraOperator, {
+        $push: { tours: tourData._id }
+      });
     }
-    if(req.body.englishCameraOperator){
-        const tourGuideData = await cameraOperator.findByIdAndUpdate(req.body.englishCameraOperator,{
-            $push :{tours:tourData._id}
-        })
+    if (englishCameraOperator) {
+      const cameraOperatorData = await cameraOperator.findByIdAndUpdate(englishCameraOperator, {
+        $push: { tours: tourData._id }
+      });
     }
-    if(req.body.italianCameraOperator){
-        const tourGuideData = await cameraOperator.findByIdAndUpdate(req.body.italianCameraOperator,{
-            $push :{tours:tourData._id}
-        })
+    if (italianCameraOperator) {
+      const cameraOperatorData = await cameraOperator.findByIdAndUpdate(italianCameraOperator, {
+        $push: { tours: tourData._id }
+      });
     }
-    if(req.body.arabicDirector){
-        const tourGuideData = await director.findByIdAndUpdate(req.body.arabicDirector,{
-            $push :{tours:tourData._id}
-        })
+    if (arabicDirector) {
+      const directorData = await director.findByIdAndUpdate(arabicDirector, {
+        $push: { tours: tourData._id }
+      });
     }
-    if(req.body.englishDirector){
-        const tourGuideData = await director.findByIdAndUpdate(req.body.englishDirector,{
-            $push :{tours:tourData._id}
-        })
+    if (englishDirector) {
+      const directorData = await director.findByIdAndUpdate(englishDirector, {
+        $push: { tours: tourData._id }
+      });
     }
-    if(req.body.italianDirector){
-        const tourGuideData = await director.findByIdAndUpdate(req.body.italianDirector,{
-            $push :{tours:tourData._id}
-        })
+    if (italianDirector) {
+      const directorData = await director.findByIdAndUpdate(italianDirector, {
+        $push: { tours: tourData._id }
+      });
     }
-    res.send(tourData)
-})
+    res.send(tourData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error creating tour: " + error.message);
+  }
+});
+
+
 
 
 // get all admins
