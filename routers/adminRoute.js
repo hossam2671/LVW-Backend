@@ -524,9 +524,9 @@ route.get("/italianoDirectors", async function(req,res){
 
 
 // add tour
-route.post('/addTour', upload.array("images", 9), async function (req, res) {
+route.post('/addTour',upload.array("images", 9),  async function (req, res) {
   try {
-    console.log(req.body);
+    console.log(req.files);
 
     let arabicTourGuide, englishTourGuide, italianTourGuide;
     let arabicCameraOperator, englishCameraOperator, italianCameraOperator;
@@ -580,6 +580,36 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
       return res.send(`One of the directors is assigned to multiple language roles.`);
     }
 
+    if(!arabicTourGuide && (arabicCameraOperator || arabicDirector)){
+        return res.send("add arabic tour guide")
+    }
+    else if(!arabicCameraOperator && (arabicTourGuide || arabicDirector)){
+        return res.send("add arabic Camera operator")
+    }
+    else if(!arabicDirector && (arabicTourGuide || arabicCameraOperator)){
+        return res.send("add arabic Director")
+    }
+
+    if(!englishTourGuide && (englishCameraOperator || englishDirector)){
+        return res.send("add english tour guide")
+    }
+    else if(!englishCameraOperator && (englishTourGuide || englishDirector)){
+        return res.send("add english Camera operator")
+    }
+    else if(!englishDirector && (englishTourGuide || englishCameraOperator)){
+        return res.send("add english Director")
+    }
+
+    if(!italianTourGuide && (italianCameraOperator || italianDirector)){
+        return res.send("add italian tour guide")
+    }
+    else if(!italianCameraOperator && (italianTourGuide || italianDirector)){
+        return res.send("add italian Camera operator")
+    }
+    else if(!italianDirector && (italianTourGuide || italianCameraOperator)){
+        return res.send("add italian Director")
+    }
+
     const date = req.body.date;
     const newDate = new Date(date);
 
@@ -589,8 +619,7 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
       if (tourGuideId) {
         const tourGuidee = await tourGuide.findById(tourGuideId).populate("tours");
         const tourDates = tourGuidee.tours.map(tour => new Date(tour.date));
-        console.log(tourDates);
-        console.log(newDate);
+        
         for (const tourDate of tourDates) {
           if (tourDate.getTime() === newDate.getTime()) {
             console.log("hello");
@@ -633,6 +662,19 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
     if (!isTourGuideAvailable || !isCameraOperatorAvailable || !isDirectorAvailable) {
       const localDate = new Date(date).toLocaleString();
       return res.send(`One of the selected tour guides, camera operators, or directors is not available on ${localDate}.`);
+    }
+
+    if(!req.body.title){
+        return res.send("you must add title")
+    }
+    if(!req.body.date){
+        return res.send("you must add date")
+    }
+    if(!req.body.startTime){
+        return res.send("you must add time")
+    }
+    if(!arabicTourGuide && !englishTourGuide  && !italianTourGuide){
+        return res.send("you must add at least one language for the tour")
     }
 
     const tourData = await tour.create({
@@ -783,18 +825,23 @@ route.get("/oneAdmin/:id",async function(req,res){
 
 // get all reviws
 route.get("/allReviews", async function(req,res){
-    const reviewData = await review.find({}).populate({
-        path:"book",
+    const reviewData = await review
+      .find({})
+      .populate({
+        path: 'book',
         populate: [
-        {
-          path: 'tour',
-          populate: {
-            path: 'arabicTourGuide arabicCameraOperator arabicDirector englishTourGuide englishCameraOperator englishDirector italianTourGuide italianCameraOperator italianDirector',
+          {
+            path: 'tour',
+            populate: {
+              path: 'arabicTourGuide arabicCameraOperator arabicDirector englishTourGuide englishCameraOperator englishDirector italianTourGuide italianCameraOperator italianDirector',
+            },
           },
-        },
-      ],
-    })
-    res.send(reviewData)
-})
+          {
+            path: 'user',
+          },
+        ],
+      });
 
+    res.send(reviewData);
+    })
 module.exports = route;
