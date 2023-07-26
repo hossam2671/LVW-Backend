@@ -34,32 +34,49 @@ const upload = multer({ storage: fileStorage });
 //register
 
 route.post('/register', async function (req, res) {
-    if (req.body.radio == "user") {
-        const userData = await user.findOne({ email: req.body.email })
-        if (userData) {
+    console.log("Received data:", req.body);
+    try {
+        if (req.body.userType == "user") {
+            console.log("test inside");
+            const userData = await user.findOne({ email: req.body.email });
+            if (userData) {
+                res.json({
+                    status: 400,
+                    success: false,
+                    message: "Email already exist"
+                });
+            } else {
+                const hashedPassword = await bcrypt.hash(req.body.password, 10);
+                req.body.password = hashedPassword;
+
+                const userCreate = await user.create({
+                    name: req.body.name,
+                    email: req.body.email,
+                    password: hashedPassword
+                });
+                console.log(userCreate);
+                res.json({
+                    status: 200,
+                    success: true,
+                    message: "User created successfully"
+                });
+            }
+        } else {
             res.json({
                 status: 400,
                 success: false,
-                message: "Email already exist"
-            })
-        } else {
-            const hashedPassword = await bcrypt.hash(req.body.password, 10);
-            req.body.password = hashedPassword;
-
-            const userCreate = await user.create({
-                name: req.body.name,
-                email: req.body.email,
-                password: hashedPassword
-            })
-            res.json({
-                status: 200,
-                message: "Registered Successfully",
-                success: true,
-                data: userCreate
-            })
+                message: "Invalid user type"
+            });
         }
+    } catch (error) {
+        console.log(error);
+        res.json({
+            status: 500,
+            success: false,
+            message: "An error occurred"
+        });
     }
-})
+});
 
 //login
 
