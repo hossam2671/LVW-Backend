@@ -58,7 +58,8 @@ route.post('/register', async function (req, res) {
                 res.json({
                     status: 200,
                     success: true,
-                    message: "User created successfully"
+                    message: "User created successfully",
+                    data:userCreate
                 });
             }
         } else {
@@ -252,6 +253,12 @@ route.post("/makeReview" , async function(req,res){
         message:"thank you for making review"
     })
 })
+
+//get user by id 
+route.get("/getUser", async function(req,res){
+    const userData= await user.findById(req.bosy.id)
+    res.send(userData)
+} )
 
 
 module.exports = route;
