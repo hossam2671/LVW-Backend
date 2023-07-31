@@ -526,13 +526,30 @@ route.get("/italianoDirectors", async function(req,res){
 // add tour
 route.post('/addTour',upload.array("images", 9),  async function (req, res) {
   try {
-    console.log(req.files);
+    let tourGuideData ,cameraOperatorData , directorData
+
+    if(!Array.isArray(req.body.tourGuide) && req.body.tourGuide){
+        req.body.tourGuide = [req.body.tourGuide]
+    }
+    if(!Array.isArray(req.body.cameraOperator) && req.body.cameraOperator){
+        req.body.cameraOperator = [req.body.cameraOperator]
+    }
+    if(!Array.isArray(req.body.director) && req.body.director){
+        req.body.director = [req.body.director]
+    }
+
+    if(req.body.tourGuide){
+     tourGuideData = req.body.tourGuide.map((jsonString) => JSON.parse(jsonString))}
+     if(req.body.cameraOperator){
+     cameraOperatorData = req.body.cameraOperator.map((jsonString) => JSON.parse(jsonString))}
+     if(req.body.director){
+    directorData = req.body.director.map((jsonString) => JSON.parse(jsonString))}
 
     let arabicTourGuide, englishTourGuide, italianTourGuide;
     let arabicCameraOperator, englishCameraOperator, italianCameraOperator;
     let arabicDirector, englishDirector, italianDirector;
-
-    for (const tourGuide of req.body.tourGuide) {
+if(tourGuideData){
+    for (const tourGuide of tourGuideData) {
       if (tourGuide.language === "Arabic") {
         arabicTourGuide = tourGuide.guide;
       } else if (tourGuide.language === "English") {
@@ -540,9 +557,11 @@ route.post('/addTour',upload.array("images", 9),  async function (req, res) {
       } else if (tourGuide.language === "Italiano") {
         italianTourGuide = tourGuide.guide;
       }
-    }
+    }}
 
-    for (const cameraOperator of req.body.cameraOperator) {
+
+    if(cameraOperatorData){
+    for (const cameraOperator of cameraOperatorData) {
       if (cameraOperator.language === "Arabic") {
         arabicCameraOperator = cameraOperator.operator;
       } else if (cameraOperator.language === "English") {
@@ -550,9 +569,10 @@ route.post('/addTour',upload.array("images", 9),  async function (req, res) {
       } else if (cameraOperator.language === "Italiano") {
         italianCameraOperator = cameraOperator.operator;
       }
-    }
+    }}
 
-    for (const director of req.body.director) {
+    if(directorData){
+    for (const director of directorData) {
       if (director.language === "Arabic") {
         arabicDirector = director.director;
       } else if (director.language === "English") {
@@ -561,6 +581,8 @@ route.post('/addTour',upload.array("images", 9),  async function (req, res) {
         italianDirector = director.director;
       }
     }
+}
+    const images = req.files.map((file) => file.filename);
 
     // Check if a tour guide is assigned to multiple language roles
     const allTourGuides = [arabicTourGuide, englishTourGuide, italianTourGuide];
@@ -696,6 +718,7 @@ route.post('/addTour',upload.array("images", 9),  async function (req, res) {
       arabicDirector: arabicDirector,
       englishDirector: englishDirector,
       italianDirector: italianDirector,
+      img:images
     });
 
     if (arabicTourGuide) {
