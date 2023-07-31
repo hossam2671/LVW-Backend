@@ -280,5 +280,21 @@ route.get("/getUser", async function(req,res){
     res.send(userData)
 } )
 
-route.put("")
+route.put("/editInfo" , async function(req,res){
+    console.log(req.body.id)
+    const userData = await user.findByIdAndUpdate(JSON.parse(req.body.id),{
+        name:req.body.name,
+        phone:req.body.phone,
+        description:req.body.description,
+        address:req.body.address,
+        city:req.body.city
+    })
+    // const userData2 = await user.findById(req.body.id)
+    res.json({
+        success:true,
+        message:"YOur Info Updated successfuly",
+        status:400,
+        data:userData
+    })
+})
 module.exports = route;
