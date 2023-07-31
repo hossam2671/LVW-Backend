@@ -130,15 +130,35 @@ route.post("/bookTour" , async function(req,res){
 })
 
 //get one user by id
-route.get("getOneUser",async function(req,res){
-    const userData = await user.findById(req.body.id)
-    res.json({
-        data:userData,
-        success:true,
-        message:"done",
-        status:400
-    })    
-})
+route.post("/getOneUser", async function(req, res) {
+    try {
+      const userId = JSON.parse(req.body.id);
+      console.log("Received user ID:", userId);
+  
+      const userData = await user.findById(userId);
+  
+      if (!userData) {
+        console.log("User not found.");
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+  
+      console.log("User data:", userData);
+      res.json({
+        data: userData,
+        success: true,
+        message: "done",
+      });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  });
 
 //make review
 route.post("/makeReview" , async function(req,res){
