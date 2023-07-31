@@ -18,16 +18,20 @@ const userSchema = mongoose.Schema({
     address:{
         type: String,
     },
+    city:{
+        type: String,
+    },
     img:{
         type: String,
-        // default:
+        default: 'default-user.png'
     },
     coverImg:{
         type: String,
-        // default:
+        default: 'default-cover.jpg'
     },
     joinedAt:{
         type: Date,
+        default: Date.now,
     },
     description:{
         type: String,

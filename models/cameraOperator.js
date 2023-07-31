@@ -28,6 +28,9 @@ const cameraOperatorSchema = mongoose.Schema({
     address:{
         type: String,
     },
+    city:{
+        type: String,
+    },
     joinedAt:{
         type: Date,
     },
