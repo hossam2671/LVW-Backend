@@ -31,6 +31,7 @@ const upload = multer({ storage: fileStorage });
 //register
 
 route.post("/register", upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'license', maxCount: 1 }]), async function (req, res) {
+    console.log(req.body)
     console.log(req.files)
     const tourGuideData = await tourGuide.findOne({ email: req.body.email })
     const cameraOperatorData = await cameraOperator.findOne({ email: req.body.email })
@@ -44,6 +45,7 @@ route.post("/register", upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'lic
             success: false,
         })
     } else {
+        console.log("object")
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         req.body.password = hashedPassword;
 
@@ -83,6 +85,7 @@ route.post("/register", upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'lic
                 cv: req.files.cv[0].filename,
                 license: req.files.license[0].filename
             })
+            console.log(directorCreate)
             res.json({
                 status: 200,
                 message: "Registered Successfully",
