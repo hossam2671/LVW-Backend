@@ -699,14 +699,20 @@ if(tourGuideData){
         return res.send("you must add at least one language for the tour")
     }
 
+    const currentDate = new Date();
+    const [hours, minutes] = req.body.startTime.split(":").map(Number);
+    currentDate.setHours(hours);
+    currentDate.setMinutes(minutes);
+    console.log(currentDate)
+    const tourDate = new Date(req.body.date);
     const tourData = await tour.create({
       title: req.body.title,
       description: req.body.desc,
       hours: req.body.hours,
       address: req.body.address,
       tags: req.body.tags,
-      date: req.body.date,
-      time: req.body.startTime,
+      date: tourDate.toISOString().slice(0, 10),
+      time: currentDate,
       price: req.body.price,
       instructions: req.body.instructions,
       arabicTourGuide: arabicTourGuide,

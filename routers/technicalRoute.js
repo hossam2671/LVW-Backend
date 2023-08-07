@@ -238,40 +238,99 @@ route.post("/login", async (req, res) => {
     }
 });
 
-
 //get one tour guide by id
-route.get("getOneTourGuide",async function(req,res){
-    const tourGuideData = await tourGuide.findById(req.body.id)
-    res.json({
-        data:tourGuideData,
-        success:true,
-        message:"done",
-        status:400
-    })    
-})
+route.post("/getOneTourGuide", async function(req, res) {
+    try {
+      const tourGuideId = JSON.parse(req.body.id);
+      console.log("Received Tour Guide ID:", tourGuideId);
+  
+      const tourGuideData = await tourGuide.findById(tourGuideId);
+  
+      if (!tourGuideData) {
+        console.log("Tour Guide not found.");
+        return res.status(404).json({
+          success: false,
+          message: "Tour Guide not found",
+        });
+      }
+  
+      console.log("Tour Guide data:", tourGuideData);
+      res.json({
+        data: tourGuideData,
+        success: true,
+        message: "done",
+      });
+    } catch (error) {
+      console.error("Error fetching tour guide data:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  });
 
-//get one camera operator by id
-route.get("getOneCameraOperator",async function(req,res){
-    const cameraOperatorData = await cameraOperator.findById(req.body.id)
-    res.json({
-        data:cameraOperatorData,
-        success:true,
-        message:"done",
-        status:400
-    })    
-})
+  //get one camera operator by id
+route.post("/getOneCameraOperator", async function(req, res) {
+    try {
+      const cameraOperatorId = JSON.parse(req.body.id);
+      console.log("Received Camera Operator ID:", cameraOperatorId);
+  
+      const cameraOperatorData = await cameraOperator.findById(cameraOperatorId);
+  
+      if (!cameraOperatorData) {
+        console.log("Camera Operator not found.");
+        return res.status(404).json({
+          success: false,
+          message: "Camera Operator not found",
+        });
+      }
+  
+      console.log("Camera Operator data:", cameraOperatorData);
+      res.json({
+        data: cameraOperatorData,
+        success: true,
+        message: "done",
+      });
+    } catch (error) {
+      console.error("Error fetching camera operator data:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  });
 
-//get one director by id
-route.get("getOneCameraOperator",async function(req,res){
-    const cameraOperatorData = await cameraOperator.findById(req.body.id)
-    res.json({
-        data:cameraOperatorData,
-        success:true,
-        message:"done",
-        status:400
-    })    
-})
-
+  //get one director by id
+route.post("/getOneDirector", async function(req, res) {
+    console.log(req.body)
+    try {
+      const directorId = JSON.parse(req.body.id);
+      console.log("Received Director ID:", directorId);
+  
+      const directorData = await director.findById(directorId);
+  
+      if (!directorData) {
+        console.log("Director not found.");
+        return res.status(404).json({
+          success: false,
+          message: "Director not found",
+        });
+      }
+  
+      console.log("Director data:", directorData);
+      res.json({
+        data: directorData,
+        success: true,
+        message: "done",
+      });
+    } catch (error) {
+      console.error("Error fetching director data:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  });
 
   
 

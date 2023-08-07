@@ -297,4 +297,40 @@ route.put("/editInfo" , async function(req,res){
         data:userData
     })
 })
+
+route.get("/liveTours", async function (req, res) {
+    const currentDate = new Date().toISOString().slice(0, 10);
+    console.log(currentDate)
+    const tourData = await tour.find({ date: currentDate });
+    res.send(tourData);
+  });
+  
+
+  // get one tour
+route.get("/oneTour", async function(req,res){
+    const tourData = await tour.findOne(req.body.id).populate("arabicTourGuide").populate("arabicCameraOperator")
+    .populate("arabicDirector").populate("englishTourGuide").populate("englishCameraOperator")
+    .populate("englishDirector").populate("italianTourGuide").populate("italianCameraOperator")
+    .populate("italianDirector").populate({
+        path: "reviews",
+        populate: {
+          path: "book",
+          populate:{path:"user"}
+        },
+      });
+    res.send(tourData)
+})
+
+
+// get all vip categories
+route.get("/vip", async function(req,res){
+    const tourData = await tour.find({category:"vip"})
+    res.send(tourData)
+})
+
+// get all public categories
+route.get("/public", async function(req,res){
+    const tourData = await tour.find({category:"public"})
+    res.send(tourData)
+})
 module.exports = route;
