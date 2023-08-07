@@ -372,10 +372,4 @@ route.post("/getOneDirector", async function(req, res) {
 
 
 
-
-
-  
-
-
-
 module.exports = route;
