@@ -16,11 +16,11 @@ const directorSchema = mongoose.Schema({
     },
     img:{
         type: String,
-        // default:
+        default: 'default-user.png'
     },
     coverImg:{
         type: String,
-        // default:
+        default: 'default-cover.jpg'
     },
     languages:[
         {type: String},
@@ -33,6 +33,7 @@ const directorSchema = mongoose.Schema({
     },
     joinedAt:{
         type: Date,
+        default: Date.now,
     },
     faculty:{
         type:String,
@@ -57,9 +58,18 @@ const directorSchema = mongoose.Schema({
         {type:mongoose.Schema.Types.ObjectId,
         ref:"tourReview"}
     ],
-    experience:{
-        type: String,
-    },
+    position:[
+        {type:String},
+    ],
+    company:[
+        {type: String},
+    ],
+    startDate:[
+        {type: Number},
+    ],
+    endDate:[
+        {type: Number},
+    ],
     avgRate:{
         type: Number,
     },
