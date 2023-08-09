@@ -114,7 +114,7 @@ route.post("/bookTour" , async function(req,res){
         tour:req.body.tour,
         language:req.body.language,
         numberOfGuests:req.body.num,
-         price:req.body.num * tourData.price,
+        price:req.body.price,
         hours:req.body.hours,
         user:req.body.user
     })
