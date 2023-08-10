@@ -279,7 +279,7 @@ route.get("/getUser", async function(req,res){
     const userData= await user.findById(req.bosy.id)
     res.send(userData)
 } )
-
+// edit informatiom
 route.put("/editInfo" , async function(req,res){
     console.log(req.body.id)
     const userData = await user.findByIdAndUpdate(JSON.parse(req.body.id),{

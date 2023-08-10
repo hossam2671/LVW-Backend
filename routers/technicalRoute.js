@@ -426,6 +426,38 @@ route.post("/getOneDirector", async function(req, res) {
     }
   });
 
-
+// edit information
+route.put("/editnfo",async function (req,res){
+  if(req.body.role == "tourGuide"){
+    const tourGuideData = await tourGuide.findByIdAndUpdate(req.body.id,{
+      name:req.body.name,
+        phone:req.body.phone,
+        description:req.body.description,
+        address:req.body.address,
+        city:req.body.city
+    })
+    res.send(tourGuideData)
+  }
+  else if(req.body.role == "cameraOperaor"){
+    const cameraOperatorData = await cameraOperator.findByIdAndUpdate(req.body.id,{
+      name:req.body.name,
+        phone:req.body.phone,
+        description:req.body.description,
+        address:req.body.address,
+        city:req.body.city
+    })
+    res.send(cameraOperatorData)
+  }
+  else if(req.body.role == "director"){
+    const directorData = await director.findByIdAndUpdate(req.body.id,{
+      name:req.body.name,
+        phone:req.body.phone,
+        description:req.body.description,
+        address:req.body.address,
+        city:req.body.city
+    })
+    res.send(directorData)
+  }
+})
 
 module.exports = route;
