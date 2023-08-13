@@ -298,6 +298,34 @@ route.put("/editInfo" , async function(req,res){
     })
 })
 
+//edit image
+route.put("/editImage",upload.single('img'),async function (req,res){
+    console.log(req.file)
+    const userData = await user.findByIdAndUpdate(req.body.id,{
+      img:req.file.filename
+    })
+    res.json({
+        success:true,
+        message:"YOur Image Updated successfuly",
+        status:400,
+        data:userData
+    })
+  })
+
+  //edit user cover image
+route.put("/editCoverImage",upload.single('coverImg'),async function (req,res){
+    console.log(req.file)
+    const userData = await user.findByIdAndUpdate(req.body.id,{
+      coverImg:req.file.filename
+    })
+    res.json({
+        success:true,
+        message:"YOur Cover Image Updated successfuly",
+        status:400,
+        data:userData
+    })
+  })
+
 route.get("/liveTours", async function (req, res) {
     const currentDate = new Date().toISOString().slice(0, 10);
     console.log(currentDate)

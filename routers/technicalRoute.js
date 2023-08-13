@@ -460,4 +460,80 @@ route.put("/editnfo",async function (req,res){
   }
 })
 
+// edit Image
+route.put("/editImage",upload.single('img'),async function (req,res){
+  if(req.body.role == "tourGuide"){
+    const tourGuideData = await tourGuide.findByIdAndUpdate(req.body.id,{
+      img:req.file.filename
+    })
+    res.send(tourGuideData)
+  }
+  else if(req.body.role == "cameraOperaor"){
+    const cameraOperatorData = await cameraOperator.findByIdAndUpdate(req.body.id,{
+      img:req.file.filename
+    })
+    res.send(cameraOperatorData)
+  }
+  else if(req.body.role == "director"){
+    const directorData = await director.findByIdAndUpdate(req.body.id,{
+      img:req.file.filename
+    })
+    res.send(directorData)
+  }
+})
+
+// edit Cover Image
+route.put("/editCoverImage",upload.single('coverImg'),async function (req,res){
+  console.log("tesssst back")
+  if(req.body.role == "tourGuide"){
+    const tourGuideData = await tourGuide.findByIdAndUpdate(req.body.id,{
+      coverImg:req.file.filename
+    })
+    res.send(tourGuideData)
+  }
+  else if(req.body.role == "cameraOperaor"){
+    const cameraOperatorData = await cameraOperator.findByIdAndUpdate(req.body.id,{
+      coverImg:req.file.filename
+    })
+    res.send(cameraOperatorData)
+  }
+  else if(req.body.role == "director"){
+    const directorData = await director.findByIdAndUpdate(req.body.id,{
+      coverImg:req.file.filename
+    })
+    res.send(directorData)
+  }
+})
+
+//add education
+route.put("/addEducation", async function (req,res){
+  if(req.body.role == "tourGuide"){
+    const tourGuideData = await tourGuide.findByIdAndUpdate(req.body.id,{
+      university: req.body.university,
+      faculty: req.body.faculty,
+      startYear: req.body.startYear,
+      graduateYear: req.body.graduateYear
+    })
+    res.send(tourGuideData)
+  }
+  else if(req.body.role == "cameraOperator"){
+    const cameraOperaorData = await cameraOperator.findByIdAndUpdate(req.body.id,{
+      university: req.body.university,
+      faculty: req.body.faculty,
+      startYear: req.body.startYear,
+      graduateYear: req.body.graduateYear
+    })
+    res.send(cameraOperaorData)
+  }
+  else if(req.body.role == "director"){
+    const directorData = await director.findByIdAndUpdate(req.body.id,{
+      university: req.body.university,
+      faculty: req.body.faculty,
+      startYear: req.body.startYear,
+      graduateYear: req.body.graduateYear
+    })
+    res.send(directorData)
+  }
+})
+
 module.exports = route;
