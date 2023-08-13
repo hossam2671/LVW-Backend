@@ -361,4 +361,11 @@ route.get("/public", async function(req,res){
     const tourData = await tour.find({category:"public"})
     res.send(tourData)
 })
+
+//get all books of the user
+route.get("/getBooks", async function(req,res){
+    console.log(req.body)
+    const bookData = await book.find({user:req.body.id}).populate("tour")
+    res.send(bookData)
+})
 module.exports = route;
