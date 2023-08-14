@@ -889,6 +889,7 @@ route.post("/addAdmin", async function (req, res) {
             message: "Email already exist"
         })
     } else {
+        console.log("Request Body:", req.body);
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         req.body.password = hashedPassword;
 
@@ -999,4 +1000,5 @@ route.post("/addDirector",upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'l
         })
     }
 })
+
 module.exports = route;

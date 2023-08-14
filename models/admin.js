@@ -30,7 +30,7 @@ const adminSchema = mongoose.Schema({
     },
     role:{
         type: String,
-        enum: ['admin', 'headAdmin'],
+        enum: ['admin', 'headAdmin', 'superAdmin'],
         default:'admin'
     },
     joinedAt:{
