@@ -16,6 +16,12 @@ const toursSchema = mongoose.Schema({
         type: String,
         // require: true,
     },
+    
+    city:{
+        type: String,
+        // require: true,
+    },
+
     location:{
         type: String,
         // require: true,
