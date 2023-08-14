@@ -336,7 +336,8 @@ route.get("/liveTours", async function (req, res) {
 
   // get one tour
 route.get("/oneTour", async function(req,res){
-    const tourData = await tour.findOne(req.body.id).populate("arabicTourGuide").populate("arabicCameraOperator")
+    console.log(req.query.id)
+    const tourData = await tour.findById(req.query.id).populate("arabicTourGuide").populate("arabicCameraOperator")
     .populate("arabicDirector").populate("englishTourGuide").populate("englishCameraOperator")
     .populate("englishDirector").populate("italianTourGuide").populate("italianCameraOperator")
     .populate("italianDirector").populate({
