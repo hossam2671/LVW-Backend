@@ -231,6 +231,53 @@ route.put('/unblock', async function (req, res) {
     }
 });
 
+//change tour guide role
+route.put('/updateTourGuide', async function (req, res) {
+    const tourGuideData = await tourGuide.findById(req.body.id);
+    if (tourGuideData) {
+        const tourGuideupdated = await tourGuide.findByIdAndUpdate(req.body.id, {
+            role: "headTourGuide"
+        });
+        const tourGuideDataupdated = await tourGuide.findById(req.body.id);
+        res.json({
+            status: 400,
+            success: true,
+            data: tourGuideDataupdated,
+            message: "Updated Successfully"
+        });
+    } else if (!tourGuideData) {
+        res.json({
+            status: 200,
+            success: false,
+            message: "No one with that info"
+        });
+
+    }
+});
+//change head tour guide role
+route.put('/updateHeadTourGuide', async function (req, res) {
+    const tourGuideData = await tourGuide.findById(req.body.id);
+    if (tourGuideData) {
+        const tourGuideupdated = await tourGuide.findByIdAndUpdate(req.body.id, {
+            role: "tourGuide"
+        });
+        const tourGuideDataupdated = await tourGuide.findById(req.body.id);
+        res.json({
+            status: 400,
+            success: true,
+            data: tourGuideDataupdated,
+            message: "Updated Successfully"
+        });
+    } else if (!tourGuideData) {
+        res.json({
+            status: 200,
+            success: false,
+            message: "No one with that info"
+        });
+
+    }
+});
+
 // get all tours
 route.get("/allTours", async function (req, res) {
     const toursData = await tour.find({}).populate("arabicTourGuide").populate("arabicCameraOperator")
@@ -956,7 +1003,7 @@ route.post("/addCameraOperator",upload.fields([{ name: 'cv', maxCount: 1 }, { na
             name: req.body.name,
             email: req.body.email,
             password: hashedPassword,
-            role: req.body.role,
+            // role: req.body.role,
             cv: req.files.cv[0].filename,
             license: req.files.license[0].filename,
             status:"accepted"
@@ -987,7 +1034,7 @@ route.post("/addDirector",upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'l
             name: req.body.name,
             email: req.body.email,
             password: hashedPassword,
-            role: req.body.role,
+            // role: req.body.role,
             cv: req.files.cv[0].filename,
             license: req.files.license[0].filename,
             status:"accepted"

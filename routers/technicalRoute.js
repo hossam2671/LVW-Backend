@@ -536,4 +536,7 @@ route.put("/addEducation", async function (req,res){
   }
 })
 
+
+
+
 module.exports = route;
