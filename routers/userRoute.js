@@ -1,9 +1,9 @@
 const express = require("express");
 const route = express.Router();
-
+const { ObjectId } = require('mongoose').Types;
 const cors = require("cors")
 const cookieParser = require("cookie-parser");
-const { ObjectId } = require('mongoose').Types;
+
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -364,8 +364,8 @@ route.get("/public", async function(req,res){
 
 //get all books of the user
 route.get("/getBooks", async function(req,res){
-    console.log(req.body)
-    const bookData = await book.find({user:req.body.id}).populate("tour")
+    console.log(req.query)
+    const bookData = await book.find({user:new ObjectId(JSON.parse(req.query.id))}).populate("tour")
     res.send(bookData)
 })
 module.exports = route;
