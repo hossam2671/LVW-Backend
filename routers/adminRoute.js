@@ -747,6 +747,15 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
         if (!req.body.startTime) {
             return res.send("you must add time")
         }
+        if (!req.body.address) {
+            return res.send("you must country of the tour")
+        }
+        if (!req.body.city) {
+            return res.send("you must the city of the tour")
+        }
+        if (!req.body.category) {
+            return res.send("you must the category of the tour")
+        }
         if (!arabicTourGuide && !englishTourGuide && !italianTourGuide) {
             return res.send("you must add at least one language for the tour")
         }
@@ -776,7 +785,9 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             arabicDirector: arabicDirector,
             englishDirector: englishDirector,
             italianDirector: italianDirector,
-            img: images
+            img: images,
+            city:req.body.city,
+            category:req.body.category
         });
 
         if (arabicTourGuide) {
