@@ -1,6 +1,6 @@
 const express = require("express");
 const route = express.Router();
-
+const moment = require('moment');
 const cors = require("cors")
 const cookieParser = require("cookie-parser");
 const { ObjectId } = require('mongoose').Types;
@@ -572,6 +572,7 @@ route.get("/italianoDirectors", async function (req, res) {
 
 // add tour
 route.post('/addTour', upload.array("images", 9), async function (req, res) {
+    console.log(req.body)
     try {
         let tourGuideData, cameraOperatorData, directorData
 
@@ -634,6 +635,17 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
                 }
             }
         }
+
+        const [hourss, minutess] = req.body.startTime.split(":").map(Number);
+        const tourDatee = new Date(req.body.date);
+        const tourStartTime = new Date(tourDatee);
+        tourStartTime.setHours(hourss);
+        tourStartTime.setMinutes(minutess);
+
+        const tourDuration = req.body.hours * 60 * 60 * 1000; // Convert hours to milliseconds
+const tourEndTime = new Date(tourStartTime.getTime() + tourDuration);
+
+
         const images = req.files.map((file) => file.filename);
 
         // Check if a tour guide is assigned to multiple language roles
@@ -787,7 +799,9 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             italianDirector: italianDirector,
             img: images,
             city:req.body.city,
-            category:req.body.category
+            category:req.body.category,
+            startTime:tourStartTime,
+            endTime:tourEndTime
         });
 
         if (arabicTourGuide) {

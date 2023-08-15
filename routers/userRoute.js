@@ -325,13 +325,6 @@ route.put("/editCoverImage",upload.single('coverImg'),async function (req,res){
         data:userData
     })
   })
-
-route.get("/liveTours", async function (req, res) {
-    const currentDate = new Date().toISOString().slice(0, 10);
-    console.log(currentDate)
-    const tourData = await tour.find({ date: currentDate });
-    res.send(tourData);
-  });
   
 
   // get one tour
