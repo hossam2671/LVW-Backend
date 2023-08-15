@@ -643,7 +643,8 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
         tourStartTime.setMinutes(minutess);
 
         const tourDuration = req.body.hours * 60 * 60 * 1000; // Convert hours to milliseconds
-const tourEndTime = new Date(tourStartTime.getTime() + tourDuration);
+        const tourEndTime = new Date(tourStartTime.getTime() + tourDuration);
+
 
 
         const images = req.files.map((file) => file.filename);
@@ -798,10 +799,10 @@ const tourEndTime = new Date(tourStartTime.getTime() + tourDuration);
             englishDirector: englishDirector,
             italianDirector: italianDirector,
             img: images,
-            city:req.body.city,
-            category:req.body.category,
-            startTime:tourStartTime,
-            endTime:tourEndTime
+            city: req.body.city,
+            category: req.body.category,
+            startTime: tourStartTime,
+            endTime: tourEndTime
         });
 
         if (arabicTourGuide) {
@@ -981,7 +982,7 @@ route.post("/addAdmin", async function (req, res) {
 })
 
 // add tour guide
-route.post("/addTourGuide",upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'license', maxCount: 1 }]), async function (req, res) {
+route.post("/addTourGuide", upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'license', maxCount: 1 }]), async function (req, res) {
     const tourGuideData = await tourGuide.findOne({ email: req.body.email })
     if (tourGuideData) {
         res.json({
@@ -993,14 +994,14 @@ route.post("/addTourGuide",upload.fields([{ name: 'cv', maxCount: 1 }, { name: '
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         req.body.password = hashedPassword;
 
-        const tourGuideCreate =await tourGuide.create({
+        const tourGuideCreate = await tourGuide.create({
             name: req.body.name,
             email: req.body.email,
             password: hashedPassword,
             role: req.body.role,
             cv: req.files.cv[0].filename,
             license: req.files.license[0].filename,
-            status:"accepted"
+            status: "accepted"
         })
         res.json({
             status: 200,
@@ -1012,7 +1013,7 @@ route.post("/addTourGuide",upload.fields([{ name: 'cv', maxCount: 1 }, { name: '
 })
 
 // add camera operator
-route.post("/addCameraOperator",upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'license', maxCount: 1 }]), async function (req, res) {
+route.post("/addCameraOperator", upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'license', maxCount: 1 }]), async function (req, res) {
     const cameraOperatorData = await cameraOperator.findOne({ email: req.body.email })
     if (cameraOperatorData) {
         res.json({
@@ -1024,14 +1025,14 @@ route.post("/addCameraOperator",upload.fields([{ name: 'cv', maxCount: 1 }, { na
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         req.body.password = hashedPassword;
 
-        const cameraOperatorCreate =await cameraOperator.create({
+        const cameraOperatorCreate = await cameraOperator.create({
             name: req.body.name,
             email: req.body.email,
             password: hashedPassword,
             // role: req.body.role,
             cv: req.files.cv[0].filename,
             license: req.files.license[0].filename,
-            status:"accepted"
+            status: "accepted"
         })
         res.json({
             status: 200,
@@ -1043,7 +1044,7 @@ route.post("/addCameraOperator",upload.fields([{ name: 'cv', maxCount: 1 }, { na
 })
 
 // add director
-route.post("/addDirector",upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'license', maxCount: 1 }]), async function (req, res) {
+route.post("/addDirector", upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'license', maxCount: 1 }]), async function (req, res) {
     const directorData = await cameraOperator.findOne({ email: req.body.email })
     if (directorData) {
         res.json({
@@ -1055,14 +1056,14 @@ route.post("/addDirector",upload.fields([{ name: 'cv', maxCount: 1 }, { name: 'l
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         req.body.password = hashedPassword;
 
-        const directorCreate =await director.create({
+        const directorCreate = await director.create({
             name: req.body.name,
             email: req.body.email,
             password: hashedPassword,
             // role: req.body.role,
             cv: req.files.cv[0].filename,
             license: req.files.license[0].filename,
-            status:"accepted"
+            status: "accepted"
         })
         res.json({
             status: 200,
