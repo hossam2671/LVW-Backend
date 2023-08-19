@@ -639,9 +639,10 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
         const [hourss, minutess] = req.body.startTime.split(":").map(Number);
         const tourDatee = new Date(req.body.date);
         const tourStartTime = new Date(tourDatee);
+
         tourStartTime.setHours(hourss);
         tourStartTime.setMinutes(minutess);
-
+        const cairoDate = moment(tourStartTime).tz('Africa/Cairo');
         const tourDuration = req.body.hours * 60 * 60 * 1000; // Convert hours to milliseconds
         const tourEndTime = new Date(tourStartTime.getTime() + tourDuration);
 
@@ -785,8 +786,8 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             hours: req.body.hours,
             address: req.body.address,
             tags: req.body.tags,
-            date: tourDate.toISOString().slice(0, 10),
-            time: currentDate,
+            date: moment.utc(tourDate.toISOString().slice(0, 10)).tz('Africa/Cairo'),
+            time: moment.utc(currentDate).tz('Africa/Cairo'),
             price: req.body.price,
             instructions: req.body.instructions,
             arabicTourGuide: arabicTourGuide,
@@ -799,10 +800,17 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             englishDirector: englishDirector,
             italianDirector: italianDirector,
             img: images,
+<<<<<<< Updated upstream
             city: req.body.city,
             category: req.body.category,
             startTime: tourStartTime,
             endTime: tourEndTime
+=======
+            city:req.body.city,
+            category:req.body.category,
+            startTime:tourStartTime,
+            endTime:moment.utc(tourEndTime).tz('Africa/Cairo')
+>>>>>>> Stashed changes
         });
 
         if (arabicTourGuide) {

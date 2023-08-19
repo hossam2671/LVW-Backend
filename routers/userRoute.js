@@ -3,6 +3,7 @@ const route = express.Router();
 const { ObjectId } = require('mongoose').Types;
 const cors = require("cors")
 const cookieParser = require("cookie-parser");
+const moment = require('moment-timezone');
 
 
 const jwt = require("jsonwebtoken");
@@ -362,4 +363,34 @@ route.get("/getBooks", async function(req,res){
     const bookData = await book.find({user:new ObjectId(JSON.parse(req.query.id))}).populate("tour")
     res.send(bookData)
 })
+
+// get all live tours happening now
+route.get("/liveTours", async function(req, res) {
+    try {
+        const currentTime = moment().tz('Europe/Cairo'); // Get the current time
+        const tourData = await tour.find({})
+        for (const tour of tourData) {
+            console.log(tour.startTime)
+            console.log(tour.endTime)
+        }
+        console.log(currentTime)
+        const liveTours = await tour.find({
+            startTime: { $lte: currentTime }, // Tour's start time is less than or equal to the current time
+            endTime: { $gt: currentTime },   // Tour's end time is greater than the current time
+        });
+
+        res.json({
+            success: true,
+            data: liveTours,
+            message: "Live tours happening now",
+        });
+    } catch (error) {
+        console.error("Error fetching live tours:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+});
+
 module.exports = route;
