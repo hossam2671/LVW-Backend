@@ -163,47 +163,57 @@ route.post("/getOneUser", async function(req, res) {
 
 //make review
 route.post("/makeReview" , async function(req,res){
+    console.log(req.body)
     const reviewData = await review.create({
         user:req.body.user,
         book:req.body.book,
         rate:req.body.rate,
         comment:req.body.comment,
-        tourGideRate:req.body.tourGideRate,
-        tourGideComment:req.body.tourGideComment,
+        tourGideRate:req.body.tourGuideRate,
+        tourGideComment:req.body.tourGuideComment,
         cameraOperatorRate:req.body.cameraOperatorRate,
         cameraOperatorComment:req.body.cameraOperatorComment,
         directorRate:req.body.directorRate,
-        directorComment:req.bodydirectorComment
+        directorComment:req.body.directorComment
     })
+
     const bookData =await book.findById(req.body.book)
+    const bookData4 = await book.findByIdAndUpdate(req.body.book,{
+        isReviewed:true
+    }) 
+    const bookData3 =await tour.findById(bookData.tour)
     const tourData = await tour.findByIdAndUpdate(bookData.tour,{
         $push:{reviews:reviewData._id},
-        $inc :{allRate:reviewData.rate},
+        $set :{allRate:bookData3.allRate?(bookData3.allRate+reviewData.rate):reviewData.rate},
     })
+    console.log(tourData)
     const tourData2 = await tour.findById(bookData.tour)
     const tourData3 = await tour.findByIdAndUpdate(bookData.tour,{
         avgRate:tourData2.allRate/tourData2.reviews.length        
     })
     if(bookData.language=="Arabic"){
-    const tourGuideData = await tourGuide.findByIdAndUpdate(tourData2.arabicTourGuide,{
-        $push:{reviews:reviewData._id},
-        $inc :{allRate:reviewData.tourGideRate},
+        const tourGuideData4 = await tourGuide.findById(tourData2.arabicTourGuide)
+        const tourGuideData = await tourGuide.findByIdAndUpdate(tourData2.arabicTourGuide,{
+            $push:{reviews:reviewData._id},
+            $set :{allRate:tourGuideData4.allRate?(reviewData.tourGideRate+tourGuideData4.allRate):reviewData.tourGideRate},
+        })
+        const tourGuideData2 = await tourGuide.findById(tourData2.arabicTourGuide)
+        const tourGuideData3 = await tourGuide.findByIdAndUpdate(tourData2.arabicTourGuide,{
+            avgRate:tourGuideData2.allRate/tourGuideData2.reviews.length
     })
-    const tourGuideData2 = await tourGuide.findById(tourData2.arabicTourGuide)
-    const tourGuideData3 = await tourGuide.findByIdAndUpdate(tourData2.arabicTourGuide,{
-        avgRate:tourGuideData2.allRate/tourGuideData2.reviews.length
-    })
+    const cameraOperatorData4 = await cameraOperator.findById(tourData2.arabicCameraOperator)
     const cameraOperatorData =await cameraOperator.findByIdAndUpdate(tourData2.arabicCameraOperator,{
         $push:{reviews:reviewData._id},
-        $inc :{allRate:reviewData.cameraOperatorRate},
+        $set :{allRate:cameraOperatorData4.allRate?(reviewData.cameraOperatorRate+cameraOperatorData4.allRate):reviewData.cameraOperatorRate},
     })
     const cameraOperatorData2 = await cameraOperator.findById(tourData2.arabicCameraOperator)
     const cameraOperatorData3 = await cameraOperator.findByIdAndUpdate(tourData2.arabicCameraOperator,{
         avgRate:cameraOperatorData2.allRate/cameraOperatorData2.reviews.length
     })
+    const directorData4 = await director.findById(tourData2.arabicDirector)
     const directorData =await director.findByIdAndUpdate(tourData2.arabicDirector,{
         $push:{reviews:reviewData._id},
-        $inc :{allRate:reviewData.directorRate},
+        $set :{allRate:directorData4.allRate?(reviewData.directorRate+directorData4.allRate):reviewData.directorRate},
     })
     const directorData2 = await director.findById(tourData2.arabicDirector)
     const directorData3 = await director.findByIdAndUpdate(tourData2.arabicDirector,{
@@ -212,25 +222,29 @@ route.post("/makeReview" , async function(req,res){
 
     }
     else if(bookData.language=="English"){
+        const tourGuideData4 = await tourGuide.findById(tourData2.englishTourGuide)
         const tourGuideData = await tourGuide.findByIdAndUpdate(tourData2.englishTourGuide,{
             $push:{reviews:reviewData._id},
-            $inc :{allRate:reviewData.tourGideRate},
+            $set :{allRate:tourGuideData4.allRate?(reviewData.tourGideRate+tourGuideData4.allRate):reviewData.tourGideRate},
         })
+        // console.log(tourData3)
         const tourGuideData2 = await tourGuide.findById(tourData2.englishTourGuide)
         const tourGuideData3 = await tourGuide.findByIdAndUpdate(tourData2.englishTourGuide,{
             avgRate:tourGuideData2.allRate/tourGuideData2.reviews.length
         })
+        const cameraOperatorData4 = await cameraOperator.findById(tourData2.englishCameraOperator)
         const cameraOperatorData =await cameraOperator.findByIdAndUpdate(tourData2.englishCameraOperator,{
             $push:{reviews:reviewData._id},
-            $inc :{allRate:reviewData.cameraOperatorRate},
+            $set :{allRate:cameraOperatorData4.allRate?(reviewData.cameraOperatorRate+cameraOperatorData4.allRate):reviewData.cameraOperatorRate},
         })
         const cameraOperatorData2 = await cameraOperator.findById(tourData2.englishCameraOperator)
         const cameraOperatorData3 = await cameraOperator.findByIdAndUpdate(tourData2.englishCameraOperator,{
             avgRate:cameraOperatorData2.allRate/cameraOperatorData2.reviews.length
         })
+        const directorData4 = await director.findById(tourData2.englishDirector)
         const directorData =await director.findByIdAndUpdate(tourData2.englishDirector,{
             $push:{reviews:reviewData._id},
-            $inc :{allRate:reviewData.directorRate},
+            $set :{allRate:directorData4.allRate?(reviewData.directorRate+directorData4.allRate):reviewData.directorRate},
         })
         const directorData2 = await director.findById(tourData2.englishDirector)
         const directorData3 = await director.findByIdAndUpdate(tourData2.englishDirector,{
@@ -347,7 +361,7 @@ route.get("/oneTour", async function(req,res){
 
 // get all vip categories
 route.get("/vip", async function(req,res){
-    const tourData = await tour.find({category:"vip"})
+    const tourData = await tour.find({category:"VIP"})
     res.send(tourData)
 })
 
@@ -392,5 +406,28 @@ route.get("/liveTours", async function(req, res) {
         });
     }
 });
+
+
+// get number of Travelers
+route.get("/allTravelers", async function(req,res){
+    const bookData = await book.find()
+    let travelers = 0
+    for (const book of bookData) {
+        travelers += book.numberOfGuests
+    }    
+    res.send({travelers:travelers})
+})
+
+//get popular tours
+route.get("/popularTours",async function(req,res){
+    const tourData = await tour.find({}).sort({avgRate:-1}).limit(6)
+    res.send(tourData)
+})
+
+//get popular reviews
+route.get("/popularReviews", async function(req,res){
+    const reviewData = await review.find({}).sort({rate:-1}).limit(6).populate("user")
+    res.send(reviewData)
+})
 
 module.exports = route;

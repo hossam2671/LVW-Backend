@@ -115,6 +115,12 @@ const toursSchema = mongoose.Schema({
         type:String,
         enum: ['pending',"live",'finished'],
         default:'pending'
+    },
+    latitude:{
+        type:Number
+    },
+    longitude :{
+        type:Number
     }
 },{
     versionKey:false,

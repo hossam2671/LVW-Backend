@@ -24,6 +24,9 @@ const bookSchema = mongoose.Schema({
     hours:{
         type:Number,
         // require: true,
+    },
+    isReviewed:{
+        type:Boolean
     }
 
 },{
