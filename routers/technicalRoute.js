@@ -536,6 +536,43 @@ route.put("/addEducation", async function (req,res){
   }
 })
 
+//add experience
+route.put("/addExperience", async function (req,res){
+  if(req.body.role == "tourGuide"){
+    const tourGuideData = await tourGuide.findByIdAndUpdate(req.body.id,{
+      $push: {
+        position: req.body.position,
+        company: req.body.company,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate
+      }
+    })
+    res.send(tourGuideData)
+  }
+  else if(req.body.role == "cameraOperator"){
+    const cameraOperaorData = await cameraOperator.findByIdAndUpdate(req.body.id,{
+      $push: {
+        position: req.body.position,
+        company: req.body.company,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate
+      }
+    })
+    res.send(cameraOperaorData)
+  }
+  else if(req.body.role == "director"){
+    const directorData = await director.findByIdAndUpdate(req.body.id,{
+      $push: {
+        position: req.body.position,
+        company: req.body.company,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate
+      }
+    })
+    res.send(directorData)
+  }
+})
+
 
 
 
