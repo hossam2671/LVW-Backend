@@ -297,6 +297,35 @@ route.get("/getUser", async function(req,res){
 // edit informatiom
 route.put("/editInfo" , async function(req,res){
     console.log(req.body.id)
+    if(!req.body.name){
+        res.json({
+            success:false,
+            message:"You must Add Name",
+            status:400,
+        })    
+    }
+    else if(!req.body.phone){
+        res.json({
+            success:false,
+            message:"You must Add phone",
+            status:400,
+        })
+    }
+    else if(!req.body.address){
+        res.json({
+            success:false,
+            message:"You must Add Address",
+            status:400,
+        })
+    }
+    else if(!req.body.city){
+        res.json({
+            success:false,
+            message:"You must Add City",
+            status:400,
+        })
+    }
+    else {
     const userData = await user.findByIdAndUpdate(JSON.parse(req.body.id),{
         name:req.body.name,
         phone:req.body.phone,
@@ -311,6 +340,7 @@ route.put("/editInfo" , async function(req,res){
         status:400,
         data:userData
     })
+}
 })
 
 //edit image
