@@ -817,13 +817,9 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             city: req.body.city,
             category: req.body.category,
             startTime: tourStartTime,
-<<<<<<< Updated upstream
             endTime: tourEndTime,
             longitude:longitude,
             latitude:latitude
-=======
-            endTime: tourEndTime
->>>>>>> Stashed changes
         });
 
         if (arabicTourGuide) {
