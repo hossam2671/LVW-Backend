@@ -37,7 +37,6 @@ const upload = multer({ storage: fileStorage });
 //register
 
 route.post('/register', async function (req, res) {
-    // console.log(req.body)
     const adminData = await admin.findOne({ email: req.body.email })
     if (adminData) {
         res.json({
@@ -573,7 +572,6 @@ route.get("/italianoDirectors", async function (req, res) {
 
 // add tour
 route.post('/addTour', upload.array("images", 9), async function (req, res) {
-    console.log(req.body)
     try {
         let tourGuideData, cameraOperatorData, directorData
 
@@ -711,7 +709,7 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
 
                 for (const tourDate of tourDates) {
                     if (tourDate.getTime() === newDate.getTime()) {
-                        console.log("hello");
+          
                         isTourGuideAvailable = false;
                         break;
                     }
@@ -760,11 +758,8 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             const firstResult = response.data[0];
              latitude = parseFloat(firstResult.lat);
              longitude = parseFloat(firstResult.lon);
-            } else {
-                console.log('Location not found.');
             }
         })
-        console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
 
         if (!req.body.title) {
             return res.send("you must add title")
@@ -792,7 +787,6 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
         const [hours, minutes] = req.body.startTime.split(":").map(Number);
         currentDate.setHours(hours);
         currentDate.setMinutes(minutes);
-        console.log(currentDate)
         const tourDate = new Date(req.body.date);
         const tourData = await tour.create({
             title: req.body.title,
@@ -817,13 +811,9 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             city: req.body.city,
             category: req.body.category,
             startTime: tourStartTime,
-<<<<<<< Updated upstream
             endTime: tourEndTime,
             longitude:longitude,
             latitude:latitude
-=======
-            endTime: tourEndTime
->>>>>>> Stashed changes
         });
 
         if (arabicTourGuide) {
@@ -873,7 +863,6 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
         }
         res.send(tourData);
     } catch (error) {
-        console.error(error);
         res.status(500).send("Error creating tour: " + error.message);
     }
 });
@@ -944,9 +933,7 @@ route.get("/public", async function (req, res) {
 
 // get admin by id
 route.get("/oneAdmin/:id", async function (req, res) {
-    console.log(req.params)
     const adminData = await admin.findById(req.params.id)
-    console.log(adminData)
     res.send(adminData)
 })
 
@@ -983,7 +970,6 @@ route.post("/addAdmin", async function (req, res) {
             message: "Email already exist"
         })
     } else {
-        console.log("Request Body:", req.body);
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         req.body.password = hashedPassword;
 

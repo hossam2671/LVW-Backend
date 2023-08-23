@@ -35,10 +35,8 @@ const upload = multer({ storage: fileStorage });
 //register
 
 route.post('/register', async function (req, res) {
-    console.log("Received data:", req.body);
     try {
         if (req.body.userType == "user") {
-            console.log("test inside");
             const userData = await user.findOne({ email: req.body.email });
             if (userData) {
                 res.json({
@@ -55,7 +53,6 @@ route.post('/register', async function (req, res) {
                     email: req.body.email,
                     password: hashedPassword
                 });
-                console.log(userCreate);
                 res.json({
                     status: 200,
                     success: true,
@@ -71,7 +68,6 @@ route.post('/register', async function (req, res) {
             });
         }
     } catch (error) {
-        console.log(error);
         res.json({
             status: 500,
             success: false,
@@ -134,26 +130,22 @@ route.post("/bookTour" , async function(req,res){
 route.post("/getOneUser", async function(req, res) {
     try {
       const userId = JSON.parse(req.body.id);
-      console.log("Received user ID:", userId);
   
       const userData = await user.findById(userId);
   
       if (!userData) {
-        console.log("User not found.");
         return res.status(404).json({
           success: false,
           message: "User not found",
         });
       }
   
-      console.log("User data:", userData);
       res.json({
         data: userData,
         success: true,
         message: "done",
       });
     } catch (error) {
-      console.error("Error fetching user data:", error);
       res.status(500).json({
         success: false,
         message: "Internal server error",
@@ -163,7 +155,6 @@ route.post("/getOneUser", async function(req, res) {
 
 //make review
 route.post("/makeReview" , async function(req,res){
-    console.log(req.body)
     const reviewData = await review.create({
         user:req.body.user,
         book:req.body.book,
@@ -186,7 +177,6 @@ route.post("/makeReview" , async function(req,res){
         $push:{reviews:reviewData._id},
         $set :{allRate:bookData3.allRate?(bookData3.allRate+reviewData.rate):reviewData.rate},
     })
-    console.log(tourData)
     const tourData2 = await tour.findById(bookData.tour)
     const tourData3 = await tour.findByIdAndUpdate(bookData.tour,{
         avgRate:tourData2.allRate/tourData2.reviews.length        
@@ -227,7 +217,6 @@ route.post("/makeReview" , async function(req,res){
             $push:{reviews:reviewData._id},
             $set :{allRate:tourGuideData4.allRate?(reviewData.tourGideRate+tourGuideData4.allRate):reviewData.tourGideRate},
         })
-        // console.log(tourData3)
         const tourGuideData2 = await tourGuide.findById(tourData2.englishTourGuide)
         const tourGuideData3 = await tourGuide.findByIdAndUpdate(tourData2.englishTourGuide,{
             avgRate:tourGuideData2.allRate/tourGuideData2.reviews.length
@@ -296,7 +285,6 @@ route.get("/getUser", async function(req,res){
 } )
 // edit informatiom
 route.put("/editInfo" , async function(req,res){
-    console.log(req.body.id)
     if(!req.body.name){
         res.json({
             success:false,
@@ -345,7 +333,6 @@ route.put("/editInfo" , async function(req,res){
 
 //edit image
 route.put("/editImage",upload.single('img'),async function (req,res){
-    console.log(req.file)
     const userData = await user.findByIdAndUpdate(req.body.id,{
       img:req.file.filename
     })
@@ -359,7 +346,6 @@ route.put("/editImage",upload.single('img'),async function (req,res){
 
   //edit user cover image
 route.put("/editCoverImage",upload.single('coverImg'),async function (req,res){
-    console.log(req.file)
     const userData = await user.findByIdAndUpdate(req.body.id,{
       coverImg:req.file.filename
     })
@@ -374,7 +360,6 @@ route.put("/editCoverImage",upload.single('coverImg'),async function (req,res){
 
   // get one tour
 route.get("/oneTour", async function(req,res){
-    console.log(req.query.id)
     const tourData = await tour.findById(req.query.id).populate("arabicTourGuide").populate("arabicCameraOperator")
     .populate("arabicDirector").populate("englishTourGuide").populate("englishCameraOperator")
     .populate("englishDirector").populate("italianTourGuide").populate("italianCameraOperator")
@@ -403,7 +388,6 @@ route.get("/public", async function(req,res){
 
 //get all books of the user
 route.get("/getBooks", async function(req,res){
-    console.log(req.query)
     const bookData = await book.find({user:new ObjectId(JSON.parse(req.query.id))}).populate("tour")
     res.send(bookData)
 })
@@ -411,13 +395,9 @@ route.get("/getBooks", async function(req,res){
 // get all live tours happening now
 route.get("/liveTours", async function(req, res) {
     try {
-        const currentTime = moment().tz('Europe/Cairo'); // Get the current time
+        const currentTime = moment().tz('Africa/Cairo'); // Get the current time
         const tourData = await tour.find({})
-        for (const tour of tourData) {
-            console.log(tour.startTime)
-            console.log(tour.endTime)
-        }
-        console.log(currentTime)
+        
         const liveTours = await tour.find({
             startTime: { $lte: currentTime }, // Tour's start time is less than or equal to the current time
             endTime: { $gt: currentTime },   // Tour's end time is greater than the current time
@@ -429,7 +409,6 @@ route.get("/liveTours", async function(req, res) {
             message: "Live tours happening now",
         });
     } catch (error) {
-        console.error("Error fetching live tours:", error);
         res.status(500).json({
             success: false,
             message: "Internal server error",
