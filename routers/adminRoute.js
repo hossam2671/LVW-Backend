@@ -787,14 +787,14 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
         const [hours, minutes] = req.body.startTime.split(":").map(Number);
         currentDate.setHours(hours);
         currentDate.setMinutes(minutes);
-        const tourDate = new Date(req.body.date);
+        const tourDate = moment.utc(req.body.date).tz('Africa/Cairo');
         const tourData = await tour.create({
             title: req.body.title,
             description: req.body.desc,
             hours: req.body.hours,
             address: req.body.address,
             tags: req.body.tags,
-            date: moment.utc(tourDate.toISOString().slice(0, 10)).tz('Africa/Cairo'),
+            date: tourDate,
             time: moment.utc(currentDate).tz('Africa/Cairo'),
             price: req.body.price,
             instructions: req.body.instructions,
@@ -815,7 +815,7 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             longitude:longitude,
             latitude:latitude
         });
-
+        console.log(tourData)
         if (arabicTourGuide) {
             const tourGuideData = await tourGuide.findByIdAndUpdate(arabicTourGuide, {
                 $push: { tours: tourData._id }
