@@ -572,6 +572,7 @@ route.get("/italianoDirectors", async function (req, res) {
 
 // add tour
 route.post('/addTour', upload.array("images", 9), async function (req, res) {
+    console.log(req.body)
     try {
         let tourGuideData, cameraOperatorData, directorData
 
@@ -641,7 +642,7 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
 
         tourStartTime.setHours(hourss);
         tourStartTime.setMinutes(minutess);
-        const cairoDate = moment(tourStartTime).tz('Africa/Cairo');
+        const cairoDate = moment.utc(tourStartTime).tz('Africa/Cairo');
         const tourDuration = req.body.hours * 60 * 60 * 1000; // Convert hours to milliseconds
         const tourEndTime = new Date(tourStartTime.getTime() + tourDuration);
 
@@ -811,7 +812,7 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             city: req.body.city,
             category: req.body.category,
             startTime: tourStartTime,
-            endTime: tourEndTime,
+            endTime: moment.utc(tourEndTime).tz('Africa/Cairo'),
             longitude:longitude,
             latitude:latitude
         });
