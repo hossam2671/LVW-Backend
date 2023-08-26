@@ -37,6 +37,28 @@ const upload = multer({ storage: fileStorage });
 //register
 
 route.post('/register', async function (req, res) {
+    if(!req.body.name){
+        return res.json({
+            status:400,
+            success:false,
+            message:"You must Add Name"
+        })
+    }
+    if(!req.body.email){
+        return res.json({
+            status:400,
+            success:false,
+            message:"You must Add Email"
+        })
+    }
+    if(!req.body.password){
+        return res.json({
+            status:400,
+            success:false,
+            message:"You must Add Password"
+        })
+    }
+    
     const adminData = await admin.findOne({ email: req.body.email })
     if (adminData) {
         res.json({
@@ -65,6 +87,20 @@ route.post('/register', async function (req, res) {
 //login
 
 route.post('/login', async function (req, res) {
+    if(!req.body.email){
+        return res.json({
+            status:400,
+            success:false,
+            message:"You must Add Email"
+        })
+    }
+    if(!req.body.password){
+        return res.json({
+            status:400,
+            success:false,
+            message:"You must Add Password"
+        })
+    }
     const adminData = await admin.findOne({ email: req.body.email })
     if (!adminData) {
         res.json({
@@ -572,7 +608,7 @@ route.get("/italianoDirectors", async function (req, res) {
 
 // add tour
 route.post('/addTour', upload.array("images", 9), async function (req, res) {
-    console.log(req.body)
+    console.log(req.body.date[1])
     try {
         let tourGuideData, cameraOperatorData, directorData
 
@@ -653,49 +689,97 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
         // Check if a tour guide is assigned to multiple language roles
         const allTourGuides = [arabicTourGuide, englishTourGuide, italianTourGuide];
         if (allTourGuides.some((guide, index) => guide && allTourGuides.indexOf(guide) !== index)) {
-            return res.send(`One of the tour guides is assigned to multiple language roles.`);
+            return res.json({
+                success:false,
+                status:200,
+                message:"One of the tour guides is assigned to multiple language roles."
+            });
         }
 
         // Check if a camera operator is assigned to multiple language roles
         const allCameraOperators = [arabicCameraOperator, englishCameraOperator, italianCameraOperator];
         if (allCameraOperators.some((operator, index) => operator && allCameraOperators.indexOf(operator) !== index)) {
-            return res.send(`One of the camera operators is assigned to multiple language roles.`);
+            return res.json({
+                success:false,
+                status:200,
+                message:"One of the Camera Operators is assigned to multiple language roles."
+            });
         }
 
         // Check if a director is assigned to multiple language roles
         const allDirectors = [arabicDirector, englishDirector, italianDirector];
         if (allDirectors.some((director, index) => director && allDirectors.indexOf(director) !== index)) {
-            return res.send(`One of the directors is assigned to multiple language roles.`);
+            return res.json({
+                success:false,
+                status:200,
+                message:"One of the Directors is assigned to multiple language roles."
+            });
         }
 
         if (!arabicTourGuide && (arabicCameraOperator || arabicDirector)) {
-            return res.send("add arabic tour guide")
+            return res.json({
+                success:false,
+                status:200,
+                message:"Add Arabic Tour Guide"
+            })
         }
         else if (!arabicCameraOperator && (arabicTourGuide || arabicDirector)) {
-            return res.send("add arabic Camera operator")
+            return res.json({
+                success:false,
+                status:200,
+                message:"Add Arabic Camera Operator"
+            })
         }
         else if (!arabicDirector && (arabicTourGuide || arabicCameraOperator)) {
-            return res.send("add arabic Director")
+            return res.json({
+                success:false,
+                status:200,
+                message:"Add Arabic Director"
+            })
         }
 
         if (!englishTourGuide && (englishCameraOperator || englishDirector)) {
-            return res.send("add english tour guide")
+            return res.json({
+                success:false,
+                status:200,
+                message:"Add english Tour Guide"
+            })
         }
         else if (!englishCameraOperator && (englishTourGuide || englishDirector)) {
-            return res.send("add english Camera operator")
+            return res.json({
+                success:false,
+                status:200,
+                message:"Add english Camera Operator"
+            })
         }
         else if (!englishDirector && (englishTourGuide || englishCameraOperator)) {
-            return res.send("add english Director")
+            return res.json({
+                success:false,
+                status:200,
+                message:"Add english Director"
+            })
         }
 
         if (!italianTourGuide && (italianCameraOperator || italianDirector)) {
-            return res.send("add italian tour guide")
+            return res.json({
+                success:false,
+                status:200,
+                message:"Add Italian Tour Guide"
+            })
         }
         else if (!italianCameraOperator && (italianTourGuide || italianDirector)) {
-            return res.send("add italian Camera operator")
+            return res.json({
+                success:false,
+                status:200,
+                message:"Add Italian Camera Operator"
+            })
         }
         else if (!italianDirector && (italianTourGuide || italianCameraOperator)) {
-            return res.send("add italian Director")
+            return res.json({
+                success:false,
+                status:200,
+                message:"Add Italian Director"
+            })
         }
 
         const date = req.body.date;
@@ -749,7 +833,11 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
 
         if (!isTourGuideAvailable || !isCameraOperatorAvailable || !isDirectorAvailable) {
             const localDate = new Date(date).toLocaleString();
-            return res.send(`One of the selected tour guides, camera operators, or directors is not available on ${localDate}.`);
+            return res.json({
+                success:false,
+                status:200,
+                message:"One of the selected tour guides, camera operators, or directors is not available on ${localDate}."
+            })
         }
         let longitude,latitude
         const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${req.body.city},${req.body.address}`;
@@ -763,25 +851,53 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
         })
 
         if (!req.body.title) {
-            return res.send("you must add title")
+            return res.json({
+                success:false,
+                status:200,
+                message:"you must add title"
+            })
         }
-        if (!req.body.date) {
-            return res.send("you must add date")
+        if (!req.body.date || req.body.date.length === 15) {
+            return res.json({
+                success:false,
+                status:200,
+                message:"you must add date"
+            })
         }
         if (!req.body.startTime) {
-            return res.send("you must add time")
+            return res.json({
+                success:false,
+                status:200,
+                message:"you must add time"
+            })
         }
         if (!req.body.address) {
-            return res.send("you must country of the tour")
+            return res.json({
+                success:false,
+                status:200,
+                message:"you must select country of the tour"
+            })
         }
         if (!req.body.city) {
-            return res.send("you must the city of the tour")
+            return res.json({
+                success:false,
+                status:200,
+                message:"you must select the city of the tour"
+            })
         }
         if (!req.body.category) {
-            return res.send("you must the category of the tour")
+            return res.json({
+                success:false,
+                status:200,
+                message:"you must select the category of the tour"
+            })
         }
         if (!arabicTourGuide && !englishTourGuide && !italianTourGuide) {
-            return res.send("you must add at least one language for the tour")
+            return res.json({
+                success:false,
+                status:200,
+                message:"you must add at least one language for the tour"
+            })
         }
 
         const currentDate = new Date();
@@ -816,7 +932,7 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             longitude:longitude,
             latitude:latitude
         });
-        console.log(tourData)
+        
         if (arabicTourGuide) {
             const tourGuideData = await tourGuide.findByIdAndUpdate(arabicTourGuide, {
                 $push: { tours: tourData._id }
@@ -862,7 +978,12 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
                 $push: { tours: tourData._id }
             });
         }
-        res.send(tourData);
+        res.json({
+            success:true,
+            status:400,
+            data:tourData,
+            message:"tour added successfully"
+        })
     } catch (error) {
         res.status(500).send("Error creating tour: " + error.message);
     }
