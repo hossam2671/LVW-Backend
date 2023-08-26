@@ -639,13 +639,20 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
         const tourDatee = new Date(req.body.date);
         const tourStartTime = new Date(tourDatee);
 
+
+        console.log("Type of hourss:", typeof hourss);
+        console.log("Type of minutess:", typeof minutess);
+        console.log("req.body.startTime:", req.body.startTime);
+
         tourStartTime.setHours(hourss);
         tourStartTime.setMinutes(minutess);
-        const cairoDate = moment(tourStartTime).tz('Africa/Cairo');
+        // const cairoDate = moment(tourStartTime).tz('Africa/Cairo');
         const tourDuration = req.body.hours * 60 * 60 * 1000; // Convert hours to milliseconds
         const tourEndTime = new Date(tourStartTime.getTime() + tourDuration);
 
-
+        console.log("Type of tourStartTime:", typeof tourStartTime);
+        console.log("Type of tourEndTime:", typeof tourEndTime);
+        
 
         const images = req.files.map((file) => file.filename);
 
@@ -709,7 +716,7 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
 
                 for (const tourDate of tourDates) {
                     if (tourDate.getTime() === newDate.getTime()) {
-          
+
                         isTourGuideAvailable = false;
                         break;
                     }
@@ -750,16 +757,16 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             const localDate = new Date(date).toLocaleString();
             return res.send(`One of the selected tour guides, camera operators, or directors is not available on ${localDate}.`);
         }
-        let longitude,latitude
+        let longitude, latitude
         const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${req.body.city},${req.body.address}`;
         await axios.get(apiUrl)
-    .then(response => {
-        if (response.data.length > 0) {
-            const firstResult = response.data[0];
-             latitude = parseFloat(firstResult.lat);
-             longitude = parseFloat(firstResult.lon);
-            }
-        })
+            .then(response => {
+                if (response.data.length > 0) {
+                    const firstResult = response.data[0];
+                    latitude = parseFloat(firstResult.lat);
+                    longitude = parseFloat(firstResult.lon);
+                }
+            })
 
         if (!req.body.title) {
             return res.send("you must add title")
@@ -812,10 +819,10 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             category: req.body.category,
             startTime: tourStartTime,
             endTime: tourEndTime,
-            longitude:longitude,
-            latitude:latitude
+            longitude: longitude,
+            latitude: latitude
         });
-        console.log(tourData)
+        console.log(tourData.startTime)
         if (arabicTourGuide) {
             const tourGuideData = await tourGuide.findByIdAndUpdate(arabicTourGuide, {
                 $push: { tours: tourData._id }

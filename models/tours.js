@@ -34,7 +34,7 @@ const toursSchema = mongoose.Schema({
         type:Date,
         // require: true,
     },
-    StartTime:{
+    startTime:{
         type:Date,
         // require: true,
     },
