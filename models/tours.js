@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const timeZone = require('mongoose-timezone');
+
 const toursSchema = mongoose.Schema({
     title:{
         type: String,
@@ -34,7 +36,7 @@ const toursSchema = mongoose.Schema({
         type:Date,
         // require: true,
     },
-    StartTime:{
+    startTime:{
         type:Date,
         // require: true,
     },
@@ -126,5 +128,6 @@ const toursSchema = mongoose.Schema({
     versionKey:false,
      strict:false,
   })
+toursSchema.plugin(timeZone, { paths: ['time', 'startTime', 'endTime', 'date'] });
 const tours = mongoose.model("tours", toursSchema);
 module.exports = tours;

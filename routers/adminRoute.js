@@ -15,6 +15,8 @@ const bcrypt = require("bcryptjs");
 const path = require("path");
 const multer = require("multer");
 const axios = require('axios');
+const { format, addHours } = require('date-fns');
+
 
 const admin = require("../models/admin");
 const book = require("../models/book");
@@ -672,15 +674,28 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             }
         }
 
+        const gymTimezone = 'Africa/Cairo'; // Replace with the actual gym timezone
+
+        // Parse the selected date and time
         const [hourss, minutess] = req.body.startTime.split(":").map(Number);
         const tourDatee = new Date(req.body.date);
         const tourStartTime = new Date(tourDatee);
-
         tourStartTime.setHours(hourss);
         tourStartTime.setMinutes(minutess);
-        const cairoDate = moment.utc(tourStartTime).tz('Africa/Cairo');
+
+        // Calculate the end time using tourDuration
         const tourDuration = req.body.hours * 60 * 60 * 1000; // Convert hours to milliseconds
         const tourEndTime = new Date(tourStartTime.getTime() + tourDuration);
+
+        // Adjust the times to the gym's timezone
+        const gymStartTime = moment.tz(tourStartTime, gymTimezone);
+        const gymEndTime = moment.tz(tourEndTime, gymTimezone);
+
+        // Print formatted times for testing
+        console.log("Tour start time (local):", tourStartTime.toISOString()); // Display in ISO format
+        console.log("Tour end time (local):", tourEndTime.toISOString()); // Display in ISO format
+        console.log("Gym start time (Africa/Cairo):", gymStartTime.format('YYYY-MM-DD HH:mm:ss'));
+        console.log("Gym end time (Africa/Cairo):", gymEndTime.format('YYYY-MM-DD HH:mm:ss'));
 
 
 
@@ -794,7 +809,7 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
 
                 for (const tourDate of tourDates) {
                     if (tourDate.getTime() === newDate.getTime()) {
-          
+
                         isTourGuideAvailable = false;
                         break;
                     }
@@ -839,16 +854,16 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
                 message:"One of the selected tour guides, camera operators, or directors is not available on ${localDate}."
             })
         }
-        let longitude,latitude
+        let longitude, latitude
         const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${req.body.city},${req.body.address}`;
         await axios.get(apiUrl)
-    .then(response => {
-        if (response.data.length > 0) {
-            const firstResult = response.data[0];
-             latitude = parseFloat(firstResult.lat);
-             longitude = parseFloat(firstResult.lon);
-            }
-        })
+            .then(response => {
+                if (response.data.length > 0) {
+                    const firstResult = response.data[0];
+                    latitude = parseFloat(firstResult.lat);
+                    longitude = parseFloat(firstResult.lon);
+                }
+            })
 
         if (!req.body.title) {
             return res.json({
@@ -927,12 +942,13 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             img: images,
             city: req.body.city,
             category: req.body.category,
-            startTime: tourStartTime,
-            endTime: moment.utc(tourEndTime).tz('Africa/Cairo'),
-            longitude:longitude,
-            latitude:latitude
+            startTime: gymStartTime,
+            endTime: gymEndTime,
+            // endTime: moment.utc(tourEndTime).tz('Africa/Cairo'),
+            longitude: longitude,
+            latitude: latitude
         });
-        
+        console.log(tourData.startTime)
         if (arabicTourGuide) {
             const tourGuideData = await tourGuide.findByIdAndUpdate(arabicTourGuide, {
                 $push: { tours: tourData._id }
