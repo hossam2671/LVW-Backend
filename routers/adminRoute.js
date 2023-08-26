@@ -15,6 +15,8 @@ const bcrypt = require("bcryptjs");
 const path = require("path");
 const multer = require("multer");
 const axios = require('axios');
+const { format, addHours } = require('date-fns');
+
 
 const admin = require("../models/admin");
 const book = require("../models/book");
@@ -572,6 +574,7 @@ route.get("/italianoDirectors", async function (req, res) {
 
 // add tour
 route.post('/addTour', upload.array("images", 9), async function (req, res) {
+    console.log(req.body)
     try {
         let tourGuideData, cameraOperatorData, directorData
 
@@ -635,24 +638,30 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             }
         }
 
+        const gymTimezone = 'Africa/Cairo'; // Replace with the actual gym timezone
+
+        // Parse the selected date and time
         const [hourss, minutess] = req.body.startTime.split(":").map(Number);
         const tourDatee = new Date(req.body.date);
         const tourStartTime = new Date(tourDatee);
-
-
-        console.log("Type of hourss:", typeof hourss);
-        console.log("Type of minutess:", typeof minutess);
-        console.log("req.body.startTime:", req.body.startTime);
-
         tourStartTime.setHours(hourss);
         tourStartTime.setMinutes(minutess);
-        // const cairoDate = moment(tourStartTime).tz('Africa/Cairo');
+
+        // Calculate the end time using tourDuration
         const tourDuration = req.body.hours * 60 * 60 * 1000; // Convert hours to milliseconds
         const tourEndTime = new Date(tourStartTime.getTime() + tourDuration);
 
-        console.log("Type of tourStartTime:", typeof tourStartTime);
-        console.log("Type of tourEndTime:", typeof tourEndTime);
-        
+        // Adjust the times to the gym's timezone
+        const gymStartTime = moment.tz(tourStartTime, gymTimezone);
+        const gymEndTime = moment.tz(tourEndTime, gymTimezone);
+
+        // Print formatted times for testing
+        console.log("Tour start time (local):", tourStartTime.toISOString()); // Display in ISO format
+        console.log("Tour end time (local):", tourEndTime.toISOString()); // Display in ISO format
+        console.log("Gym start time (Africa/Cairo):", gymStartTime.format('YYYY-MM-DD HH:mm:ss'));
+        console.log("Gym end time (Africa/Cairo):", gymEndTime.format('YYYY-MM-DD HH:mm:ss'));
+
+
 
         const images = req.files.map((file) => file.filename);
 
@@ -817,8 +826,9 @@ route.post('/addTour', upload.array("images", 9), async function (req, res) {
             img: images,
             city: req.body.city,
             category: req.body.category,
-            startTime: tourStartTime,
-            endTime: tourEndTime,
+            startTime: gymStartTime,
+            endTime: gymEndTime,
+            // endTime: moment.utc(tourEndTime).tz('Africa/Cairo'),
             longitude: longitude,
             latitude: latitude
         });

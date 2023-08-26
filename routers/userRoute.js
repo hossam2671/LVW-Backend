@@ -107,6 +107,33 @@ route.post('/login', async function (req, res) {
 // book tour
 route.post("/bookTour" , async function(req,res){
     const tourData = await tour.findById(req.body.tour)
+    if(!req.body.language){
+        res.json({
+            message:"enter the language of the tour",
+            status:200,
+            success:false
+        })    
+    }else if(!req.body.num){
+        res.json({
+            message:"Enter the number of guwsts",
+            status:200,
+            success:false
+        })
+    }
+    else if(!req.body.hours){
+        res.json({
+            message:"Enter the hours",
+            status:200,
+            success:false
+        })
+    }
+    else if(!req.body.user){
+        res.json({
+            message:"login first",
+            status:200,
+            success:false
+        })
+    }else{
     const bookData = await book.create({
         tour:req.body.tour,
         language:req.body.language,
@@ -124,6 +151,7 @@ route.post("/bookTour" , async function(req,res){
         data:bookData,
         success:true
     })
+}
 })
 
 //get one user by id
@@ -396,11 +424,15 @@ route.get("/getBooks", async function(req,res){
 route.get("/liveTours", async function(req, res) {
     try {
         const currentTime = moment().tz('Africa/Cairo'); // Get the current time
+        console.log(new Date(currentTime))
         const tourData = await tour.find({})
-        
+        for (const tour of tourData) {
+            console.log(tour.startTime)
+            console.log(tour.endTime)
+        }
         const liveTours = await tour.find({
-            startTime: { $lte: currentTime }, // Tour's start time is less than or equal to the current time
-            endTime: { $gt: currentTime },   // Tour's end time is greater than the current time
+            startTime: { $lte: new Date(currentTime) }, // Tour's start time is less than or equal to the current time
+            endTime: { $gt: new Date(currentTime) },   // Tour's end time is greater than the current time
         });
 
         res.json({
