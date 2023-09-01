@@ -418,6 +418,8 @@ route.get("/allCameraOperators", async function (req, res) {
         })
     }
 })
+
+// get all directors
 route.get("/allDirectors", async function (req, res) {
     const directorData = await director.find({})
     if (director.length > 0) {
