@@ -157,7 +157,7 @@ route.post("/bookTour" , async function(req,res){
 //get one user by id
 route.post("/getOneUser", async function(req, res) {
     try {
-      const userId = JSON.parse(req.body.id);
+      const userId = req.body.id;
   
       const userData = await user.findById(userId);
   

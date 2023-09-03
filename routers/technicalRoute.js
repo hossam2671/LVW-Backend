@@ -235,18 +235,20 @@ route.put("/addLang", async (req, res) => {
 //get one tour guide by id
 route.post("/getOneTourGuide", async function (req, res) {
   try {
-    const tourGuideId = JSON.parse(req.body.id);
+    console.log(req.body); // Log the request body
+
+    const tourGuideId = req.body.id;
+    console.log('Request ID:', tourGuideId);
 
     const tourGuideData = await tourGuide.findById(tourGuideId);
+    console.log('Fetched Data:', tourGuideData);
 
     if (!tourGuideData) {
-
       return res.status(404).json({
         success: false,
         message: "Tour Guide not found",
       });
     }
-
 
     res.json({
       data: tourGuideData,
@@ -254,6 +256,7 @@ route.post("/getOneTourGuide", async function (req, res) {
       message: "done",
     });
   } catch (error) {
+    console.error('Error:', error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -261,10 +264,11 @@ route.post("/getOneTourGuide", async function (req, res) {
   }
 });
 
+
 //get one camera operator by id
 route.post("/getOneCameraOperator", async function (req, res) {
   try {
-    const cameraOperatorId = JSON.parse(req.body.id);
+    const cameraOperatorId = req.body.id;
 
     const cameraOperatorData = await cameraOperator.findById(cameraOperatorId);
 
@@ -291,7 +295,7 @@ route.post("/getOneCameraOperator", async function (req, res) {
 //get one director by id
 route.post("/getOneDirector", async function (req, res) {
   try {
-    const directorId = JSON.parse(req.body.id);
+    const directorId = req.body.id;
 
     const directorData = await director.findById(directorId);
 
@@ -319,8 +323,10 @@ route.post("/getOneDirector", async function (req, res) {
 route.post("/getOneTourGuide", async function (req, res) {
   try {
     const tourGuideId = JSON.parse(req.body.id);
+    console.log('Request ID:', tourGuideId);
 
     const tourGuideData = await tourGuide.findById(tourGuideId);
+    console.log('Fetched Data:', tourGuideData);
 
     if (!tourGuideData) {
       return res.status(404).json({
