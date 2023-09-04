@@ -424,16 +424,25 @@ route.get("/getBooks", async function(req,res){
 route.get("/liveTours", async function(req, res) {
     try {
         const currentTime = moment().tz('Africa/Cairo'); // Get the current time
-        console.log(new Date(currentTime))
-        const tourData = await tour.find({})
+        console.log(typeof currentTime)
+        console.log("ggggg",new Date(currentTime));
+        const tourData = await tour.find({});
+        const liveTours = [];
+
         for (const tour of tourData) {
-            console.log(tour.startTime)
-            console.log(tour.endTime)
+            console.log(tour.startTime);
+            console.log(tour.endTime);
+
+
+            if (
+                new Date(tour.startTime) <= new Date(currentTime) && // Check if tour's start time is less than or equal to the current time
+                new Date(tour.endTime) > new Date(currentTime)     // Check if tour's end time is greater than the current time
+            ) {
+                liveTours.push(tour);
+            }
         }
-        const liveTours = await tour.find({
-            startTime: { $lte: new Date(currentTime) }, // Tour's start time is less than or equal to the current time
-            endTime: { $gt: new Date(currentTime) },   // Tour's end time is greater than the current time
-        });
+
+        console.log("Live Tours:", liveTours); // Debug: Log live tours
 
         res.json({
             success: true,
@@ -447,6 +456,63 @@ route.get("/liveTours", async function(req, res) {
         });
     }
 });
+
+// route.get("/liveTours", async function (req, res) {
+//     try {
+//         const currentTime = moment().tz('Africa/Cairo'); // Get the current time
+//         const currentDate = currentTime.format('YYYY-MM-DD'); // Get the current date as 'YYYY-MM-DD'
+
+//         console.log("Current Date:", currentDate);
+//         console.log("Current Time:", currentTime);
+//         console.log(typeof(currentTime))
+
+
+//         const rawCurrentTime = moment();
+//         console.log("Raw Current Time:", rawCurrentTime);
+
+
+//         const tourData = await tour.find({});
+//         const liveTours = [];
+
+//         for (const tour of tourData) {
+//             const tourStartTime = moment(tour.startTime).tz('Africa/Cairo');
+//             const tourEndTime = moment(tour.endTime).tz('Africa/Cairo');
+
+//             // Check if the tour's date is the same as the current date
+//             if (tourStartTime.isSame(currentDate, 'day')) {
+//                 // Check if the tour's start time is less than or equal to the current time
+//                 if (tourStartTime.isSameOrBefore(currentTime)) {
+//                     liveTours.push(tour);
+//                 }
+
+//                 // Check if the tour's end time is in the past (i.e., it has finished)
+//                 if (tourEndTime.isSame(currentTime, 'second')) {
+//                     // Remove the tour from the liveTours array if it has finished
+//                     const index = liveTours.findIndex(t => t._id === tour._id);
+//                     if (index !== -1) {
+//                         liveTours.splice(index, 1);
+//                     }
+//                 }
+//             }
+//         }
+
+//         console.log("Live Tours:", liveTours); // Debug: Log live tours
+
+//         res.json({
+//             success: true,
+//             data: liveTours,
+//             message: "Live tours happening now",
+//         });
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).json({
+//             success: false,
+//             message: "Internal server error",
+//         });
+//     }
+
+// });
+
 
 
 // get number of Travelers
